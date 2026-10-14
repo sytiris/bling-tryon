@@ -10,7 +10,7 @@
 
 ## 安装
 
-优先使用本仓库 **Releases** 中与你系统和芯片匹配的完整安装包，内含本地助手、Node运行时及Chrome扩展。
+优先使用本仓库 **[Releases](https://github.com/sytiris/bling-tryon/releases)** 中与你系统和芯片匹配的完整安装包，内含本地助手、Node运行时及Chrome扩展。
 
 1. 解压整个安装包到固定位置，运行「启动试衣镜bling」启动器，保持终端开启。
 2. 浏览器打开 `http://127.0.0.1:3000/setup`，填写你自己的 Decart API Key，点击「验证并保存」。验证只申请短期令牌，不启动摄像头或生成视频。
