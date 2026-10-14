@@ -1,0 +1,38 @@
+name: Check and build
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: examples/ecommerce
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24.14.1'
+          cache: npm
+          cache-dependency-path: examples/ecommerce/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run typecheck
+      - run: npm run build:release
+      - name: Archive with executable permissions
+        shell: bash
+        run: tar -czf ../../dist/bling-tryon-${{ runner.os }}-${{ runner.arch }}.tar.gz -C ../../dist "$(node -p "'bling-tryon-'+process.platform+'-'+process.arch")"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: bling-tryon-${{ runner.os }}-${{ runner.arch }}
+          path: dist/*.tar.gz
+          if-no-files-found: error
+          retention-days: 14

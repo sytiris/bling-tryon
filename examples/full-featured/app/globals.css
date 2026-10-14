@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: system-ui, -apple-system, sans-serif;
+}
+
+button {
+  cursor: pointer;
+}
