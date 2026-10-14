@@ -1,0 +1,41 @@
+{
+  "name": "decart-tryon-ecommerce",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1 --port 3000",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1 --port 3000",
+    "postinstall": "node scripts/patch-decart-cancellation.mjs",
+    "typecheck": "tsc --noEmit",
+    "build:extension": "node scripts/patch-decart-cancellation.mjs && node scripts/build-extension.mjs",
+    "test": "node --experimental-test-module-mocks --test tests/*.test.mjs",
+    "helper": "node helper/main.mjs",
+    "build:helper": "node scripts/build-helper.mjs",
+    "build:release": "node scripts/build-release.mjs"
+  },
+  "dependencies": {
+    "@decartai/sdk": "0.2.10",
+    "next": "15.5.27",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "esbuild": "0.28.2",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "sharp": "0.35.5"
+  },
+  "engines": {
+    "node": ">=24.14.1"
+  },
+  "overrides": {
+    "postcss": "8.5.23",
+    "nanoid": "3.3.18",
+    "source-map-js": "1.2.2"
+  }
+}

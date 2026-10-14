@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="csrf-token" content="__CSRF_TOKEN__">
+  <title>试衣镜bling · 本地助手</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main>
+    <header><a class="brand" href="/setup">试衣镜 <em>bling ✧</em></a><span class="badge">本地助手</span></header>
+    <section class="intro"><span class="eyebrow">用你自己的 DECART 账户</span><h1>连接好，就去挑件喜欢的。</h1><p>密钥留在这台电脑。试穿费用由你的 Decart 账户承担。</p></section>
+    <section class="card">
+      <div class="section-title"><h2>Decart API Key</h2><span id="key-status">检查中</span></div>
+      <form id="key-form" autocomplete="off">
+        <label for="api-key">粘贴你的密钥</label>
+        <div class="key-input"><input id="api-key" name="api-key" type="password" autocomplete="off" spellcheck="false" maxlength="512" placeholder="从 Decart 控制台复制" required><button id="save" type="submit">验证并保存</button></div>
+      </form>
+      <p class="hint">验证时仅向 Decart 申请短期令牌，不开启摄像头，不开始生成。</p>
+      <div class="key-actions"><button id="test-current" type="button" disabled>测试当前密钥</button><button id="delete-key" type="button" disabled>删除本机密钥</button><a href="https://platform.decart.ai/api-keys" target="_blank" rel="noopener noreferrer">获取 Decart Key ↗</a></div>
+      <p id="message" role="status" hidden></p>
+    </section>
+    <section class="install">
+      <h2>准备好之后，打开试衣镜</h2>
+      <ol><li>打开 <button id="copy-extensions" class="inline" type="button">chrome://extensions <span>复制</span></button>，开启「开发者模式」。</li><li>点击「加载未打包的扩展程序」，选择安装包里的 <strong>chrome-tryon</strong> 文件夹。<button id="copy-path" class="inline" type="button">复制文件夹路径</button></li><li>回到购物网页，点插件图标。选一件衣服，允许摄像头，再点 <strong>10 秒 / 20 秒</strong>。</li></ol>
+    </section>
+    <footer><p>保持助手终端开启。关闭此网页不会停止助手；终端按 Ctrl+C 退出。</p><p>开始试穿才连接 AI；到点自动断开。10/20 秒从出画起算，实际生成计费可能更长。正方形取景不降低每秒费用。</p><p>密钥只保存在本机配置目录，不会发送给插件作者。相机画面和服装图片仅在你点击试穿后发送给 Decart。本工具与 Decart 官方无隶属关系。</p></footer>
+  </main>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

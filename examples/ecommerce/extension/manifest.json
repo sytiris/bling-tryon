@@ -1,0 +1,56 @@
+{
+  "manifest_version": 3,
+  "name": "试衣镜bling",
+  "version": "1.0.0",
+  "description": "可拖动的网页试衣浮窗，悬浮选衣，10秒或20秒实时试穿。",
+  "minimum_chrome_version": "121",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1MKKNsWj88ji/NaZ1qJDSlEw9AqW6oV8OgwLqJ2JjTi6unYm8vXYeP3urEsM3hHPhpBl+UYNcjQxjG6vYQsL6D9aQHyQTGooOn1ziC5rKvhmTsZN+N0iYCdJlkJuXnVmAxPeeHV8eOdMW/MT3IlhA9c+W3iFhhG96kYQjx7YjAY/wW+cn/4EOyKgsxtUd+GigOzy9/rghRU7fnjqIzworbDyTE6mdB9tGfc0YDNuABHIhpiDxL4/CKqC3O2j3Vj2lTGaIhnXggQAwwiepWtN33x+Ca8y1p+fNgtiQ2pyfqWuln3jiL8zHFrt6gG8gJcM+XnnPgOHy0DOHlz0CcaY6QIDAQAB",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://localhost:3000/*",
+    "http://127.0.0.1:3000/*"
+  ],
+  "optional_host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "打开试衣镜bling",
+    "default_icon": {
+      "16": "icons/16.png",
+      "48": "icons/48.png",
+      "128": "icons/128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; worker-src 'self';"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "panel.html"
+      ],
+      "matches": [
+        "https://*/*",
+        "http://*/*"
+      ]
+    }
+  ],
+  "options_ui": {
+    "page": "settings.html",
+    "open_in_tab": true
+  }
+}
