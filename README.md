@@ -28,7 +28,7 @@ Do not install the ARM64 package on Intel. Always check the actual latest Releas
 3. In Chrome, open `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, and select the package's `chrome-tryon` folder.
 4. Open an HTTPS shopping page and click the extension icon. Hover over a clothing image and click **Try this**. Allow the camera, then click **10 sec / 20 sec** to start.
 
-Drag the title bar to move the mirror. **−** minimizes it to a draggable tab; **⚙** opens helper settings. Clicking elsewhere on the shopping page leaves the mirror open.
+Drag the title bar to move the mirror. The enlarge button opens fullscreen (or a large page overlay if fullscreen is unavailable), with restore and Escape support. **−** minimizes it to a draggable tab; **⚙** opens helper settings. Clicking elsewhere on the shopping page leaves the mirror open.
 
 [Detailed installation, costs and limits](examples/ecommerce/helper/README.md) · [Privacy and data flow](examples/ecommerce/helper/PRIVACY.md)
 
@@ -59,7 +59,7 @@ The agent needs local file, terminal and browser capabilities. If it cannot open
 ## Sessions and stopping
 
 - Both durations use `lucy-vton-latest` **standard mode**. The 10/20-second timer starts at the **first decoded frame**. This is not a promise of billable duration; generation before the first frame may also be charged.
-- Starting a try-on hides the original camera feed. At the deadline, AI disconnects while the last frame and local camera remain available. Another try-on requires a deliberate click.
+- Starting a try-on hides the original camera feed. While connecting, a dashed head-and-shoulders outline and positioning tips appear alongside the elapsed wait time. At the deadline, AI disconnects immediately. A locally recorded result plays once, with hover/focus controls for progress, pause/play, stop, close and download. The local camera stays available; another AI try-on requires a deliberate click.
 - Camera off, minimizing/closing the mirror, hiding/refreshing the shopping page, helper loss and key changes stop generation as soon as possible.
 - Errors do not trigger automatic retries. The first-frame timeout is 30 seconds; client and server caps of 45/55 seconds provide a fallback.
 - Input is cropped to the center square, then padded to 1280×720. Cropping does **not** lower Decart's per-second rate.

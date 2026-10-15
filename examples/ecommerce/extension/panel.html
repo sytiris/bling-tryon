@@ -11,6 +11,7 @@
     <section class="stage">
       <video id="camera" autoplay muted playsinline aria-label="摄像头预览" data-i18n-aria-label="摄像头预览"></video>
       <video id="output" autoplay muted playsinline aria-label="AI 试穿画面" data-i18n-aria-label="AI 试穿画面"></video>
+      <video id="replay" muted playsinline aria-label="试穿回放" data-i18n-aria-label="试穿回放"></video>
       <canvas id="snapshot" aria-label="最后一帧试穿效果" data-i18n-aria-label="最后一帧试穿效果"></canvas>
       <div id="placeholder"><span class="hanger">⌁</span><p data-i18n="把自己放在画面中央">把自己放在画面中央</p></div>
       <section id="consent">
@@ -18,9 +19,30 @@
         <p data-i18n="点击试穿后才向 AI 发送画面">点击试穿后才向 AI 发送画面</p>
         <button id="enable-camera" disabled data-i18n="同意，开启">同意，开启</button>
       </section>
-      <div id="loading" hidden><span class="spinner"></span><span id="loading-text" data-i18n="准备试穿">准备试穿</span></div>
+      <div id="loading" hidden>
+        <svg class="alignment-guide" viewBox="0 0 300 300" aria-hidden="true"><path d="M150 24C121 24 103 45 103 72c0 22 11 40 28 47l-3 17c-37 8-66 28-75 60-5 20-7 51-7 79h208c0-28-2-59-7-79-9-32-38-52-75-60l-3-17c17-7 28-25 28-47 0-27-18-48-47-48Z"/></svg>
+        <div class="loading-copy">
+          <p class="alignment-title" data-i18n="站在画面中央">站在画面中央</p>
+          <p class="alignment-hint" data-i18n="稍微后退，让头部和上半身保持在框内">稍微后退，让头部和上半身保持在框内</p>
+          <div class="loading-status"><span class="spinner"></span><span id="loading-text" data-i18n="准备试穿">准备试穿</span></div>
+        </div>
+      </div>
       <span id="countdown" hidden></span>
       <span id="preview-tag" hidden data-i18n="本机预览">本机预览</span>
+      <span id="replay-badge" hidden data-i18n="回放">回放</span>
+      <div class="video-tools">
+        <div id="replay-controls" hidden>
+          <input id="replay-seek" type="range" min="0" max="10" step="0.05" value="0" aria-label="视频进度" data-i18n-aria-label="视频进度">
+          <div class="replay-actions">
+            <button id="replay-play" type="button" title="播放回放" aria-label="播放回放" data-i18n-title="播放回放" data-i18n-aria-label="播放回放"><svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z"/></svg><svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg></button>
+            <span id="replay-time">0:00 / 0:10</span>
+            <button id="replay-stop" type="button" title="停止回放" aria-label="停止回放" data-i18n-title="停止回放" data-i18n-aria-label="停止回放"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1"/></svg></button>
+            <button id="replay-download" type="button" title="下载视频" aria-label="下载视频" data-i18n-title="下载视频" data-i18n-aria-label="下载视频"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5"/></svg></button>
+            <button id="replay-close" type="button" title="关闭回放" aria-label="关闭回放" data-i18n-title="关闭回放" data-i18n-aria-label="关闭回放"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button>
+          </div>
+        </div>
+        <button id="resize-mirror" type="button" title="放大试衣镜" aria-label="放大试衣镜" data-i18n-title="放大试衣镜" data-i18n-aria-label="放大试衣镜"><svg class="expand-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6m0-6-7 7M9 21H3v-6m0 6 7-7"/></svg><svg class="restore-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3l-7 7m0-7v7h7M3 21l7-7m-7 0h7v7"/></svg></button>
+      </div>
     </section>
     <div class="status-row"><span id="status" role="status" data-i18n="正在准备">正在准备</span><span id="latency"></span></div>
     <p id="error" role="alert" hidden></p>

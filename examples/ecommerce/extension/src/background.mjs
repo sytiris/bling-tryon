@@ -52,7 +52,18 @@ chrome.runtime.onMessage.addListener((message, sender, reply) => {
       await chrome.runtime.openOptionsPage();
       return { ok: true };
     }
-    if (message.type === "get-state" && fromPanel) return { ok: true, state };
+    if (message.type === "get-state" && fromPanel) {
+      const layout = await notifyPage(state.sourceTabId, { type: "get-mirror-size" });
+      return { ok: true, state: { ...state, mirrorLarge: Boolean(layout?.large) } };
+    }
+    if (["toggle-mirror-size", "restore-mirror-size"].includes(message.type) && fromPanel) {
+      await notifyPage(state.sourceTabId, { type: message.type });
+      return { ok: true };
+    }
+    if (message.type === "mirror-size-changed" && fromPage) {
+      await notifyPanel({ type: "mirror-size-changed", large: Boolean(message.large) });
+      return { ok: true };
+    }
     if (message.type === "panel-size" && fromPanel) {
       await notifyPage(state.sourceTabId, { type: "panel-size", height: message.height });
       return { ok: true };

@@ -1,3 +1,5 @@
+import { recordOutput } from "./recording.mjs";
+import { createReplay } from "./replay.mjs";
 import { english } from "../../helper/public/i18n.js";
 import { createLocale } from "./locale.mjs";
 import { createDecartClient, models } from "@decartai/sdk";
@@ -13,6 +15,8 @@ const stage = document.querySelector(".stage");
 const camera = $("camera");
 const output = $("output");
 const snapshot = $("snapshot");
+const replay = createReplay(stage, locale);
+let recording = null;
 const model = models.realtime("lucy-vton-latest");
 let sourceTabId = null;
 let selectedUrl = null;
@@ -61,7 +65,14 @@ function clearSnapshot() {
     locale.text($("placeholder").querySelector("p"), "点击 10s / 20s 开始下一次试穿");
   }
 }
-function stopTrial(text = "试穿已停止", keepFrame = true, values) {
+function stopTrial(text = "试穿已停止", keepFrame = true, values, autoReplay = false) {
+  const duration = chosenSeconds;
+  let clip = null;
+  try {
+    if (autoReplay) clip = recording?.finish();
+    else recording?.discard();
+  } catch { /* Recording must never block AI teardown. */ }
+  recording = null;
   // Capture a local last frame before closing the media stream. Never save/upload it.
   let captured = false;
   try { if (keepFrame && output.readyState >= 2 && firstFrameAt !== null) {
@@ -70,7 +81,7 @@ function stopTrial(text = "试穿已停止", keepFrame = true, values) {
     snapshot.getContext("2d").drawImage(output, 0, 0);
     captured = true;
   } } catch { /* A snapshot failure must never prevent disconnect. */ }
-  runId++;
+  const stoppedId = ++runId;
   try { controller?.abort(); } catch {}
   controller = null;
   try { realtime?.disconnect(); } catch {}
@@ -92,6 +103,7 @@ function stopTrial(text = "试穿已停止", keepFrame = true, values) {
   output.srcObject = null;
   firstFrameAt = runStartedAt = null;
   busy = false;
+  try { replay.clear(); } catch { /* Media UI cleanup must not affect disconnect. */ }
   stage.classList.remove("active");
   stage.classList.toggle("finished", captured);
   if (stage.classList.contains("tried")) {
@@ -103,6 +115,11 @@ function stopTrial(text = "试穿已停止", keepFrame = true, values) {
   loading("");
   message(text, values);
   updateButtons();
+  if (autoReplay) void Promise.resolve(clip).then(blob => {
+    if (runId !== stoppedId || document.hidden) return;
+    if (blob) replay.show(blob, duration);
+    else error("本次视频未能录制，已保留最后一帧。");
+  });
 }
 function closeCamera() {
   cameraRequest++;
@@ -179,6 +196,7 @@ function firstFrame(id) {
   $("countdown").hidden = false;
   locale.text($("latency"), "首帧 {seconds}s", { seconds: ((firstFrameAt - runStartedAt) / 1000).toFixed(2) });
   trialTimer.startFromFirstFrame();
+  recording = recordOutput(output);
   message("试穿中 · 出画后计时 {seconds} 秒", { seconds: chosenSeconds });
 }
 
@@ -232,7 +250,7 @@ async function startTrial(seconds) {
       stopTrial("连接超时，已断开", false);
       error("30 秒内未收到试穿画面，请检查网络或稍后重试");
     }, 30000);
-    trialTimer = createTrialTimer(seconds, () => stopTrial("已完成 {seconds} 秒试穿 · AI 已断开", true, { seconds }));
+    trialTimer = createTrialTimer(seconds, () => stopTrial("已完成 {seconds} 秒试穿 · AI 已断开", true, { seconds }, true));
     // Absolute wall-clock cap is never reset by a frame or connection event.
     sessionEndsAt = Date.now() + (seconds + 35) * 1000;
     sessionDeadline = setTimeout(() => {
@@ -315,7 +333,22 @@ function selectImage(item) {
   error();
   updateButtons();
 }
+function setMirrorSize(large) {
+  document.documentElement.classList.toggle("large", Boolean(large));
+  const key = large ? "还原试衣镜" : "放大试衣镜";
+  for (const attribute of ["title", "aria-label"]) {
+    $("resize-mirror").setAttribute("data-i18n-" + attribute, key);
+    $("resize-mirror").setAttribute(attribute, t(key));
+  }
+}
+$("resize-mirror").addEventListener("click", () => {
+  void chrome.runtime.sendMessage({ target: "background", type: "toggle-mirror-size" }).catch(() => {});
+});
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") void chrome.runtime.sendMessage({ target: "background", type: "restore-mirror-size" }).catch(() => {});
+});
 function loadSource(state) {
+  setMirrorSize(state?.mirrorLarge);
   sourceTabId = Number.isInteger(state?.sourceTabId) ? state.sourceTabId : null;
   selectImage(state?.selectedItem || null);
   if (sourceTabId === null) error("请在购物页面点击插件图标启用选衣");
@@ -326,7 +359,9 @@ $("quick").addEventListener("click", () => startTrial(10));
 $("fine").addEventListener("click", () => startTrial(20));
 chrome.runtime.onMessage.addListener((incoming, sender, reply) => {
   if (sender.id !== chrome.runtime.id || sender.tab || incoming.target !== "panel") return;
-  if (incoming.type === "source-changed") {
+  if (incoming.type === "mirror-size-changed") {
+    setMirrorSize(incoming.large);
+  } else if (incoming.type === "source-changed") {
     stopTrial("已切换购物页面", false);
     loadSource(incoming.state);
   } else if (incoming.type === "garment-picked" && incoming.tabId === sourceTabId) {

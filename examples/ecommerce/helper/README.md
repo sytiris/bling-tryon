@@ -40,6 +40,12 @@ Verification failure preserves your existing key. Local deletion prevents a prev
 
 10/20 seconds means **viewing time after the first frame**, not total billed time. Generation before the first frame may be billed. Both options use `lucy-vton-latest` standard mode; fast mode is disabled. Square cropping changes framing, not the per-second price. See [Decart pricing](https://docs.platform.decart.ai/getting-started/pricing).
 
+## Fullscreen and replay
+
+Use the enlarge button in the title bar or video to view the mirror fullscreen; restore or Escape returns to its previous size. Resizing preserves the active stream. After a normal 10/20-second deadline, AI disconnects first, then the locally recorded AI video plays once. Hover or focus the video to reveal the progress bar and pause/play, stop (pause and rewind), close (discard replay) and download controls. Downloads use MP4 when supported, otherwise WebM. Replay/seek/download never starts generation. Hover over a control to see its text label; labels follow the selected language. While connecting, a dashed head-and-shoulders outline and positioning tips help you center your head and upper body. The guide disappears when the first frame arrives or the session stops.
+
+Recordings have no audio and are kept only in memory. Starting a new try-on, closing replay, camera off, minimizing/closing, or hiding/refreshing the page clears them. Errors discard incomplete recordings. Save a wanted clip with Download before leaving. If recording is unsupported or fails, the last frame remains available and billing stop rules still apply.
+
 ## Stop rules
 
 - Selecting clothing, local camera preview and opening setup do not start generation.

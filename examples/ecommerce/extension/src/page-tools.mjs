@@ -44,11 +44,28 @@ export function installHoverPicker({ minimized = false, panelUrl, language = "en
     header{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;color:#254f3c;cursor:grab;touch-action:none;user-select:none;font:600 14px/1.4 'PingFang SC',sans-serif}
     header:active{cursor:grabbing}em{font:italic 15px Georgia,serif;margin-left:5px}
     .actions{display:flex;gap:3px}button{all:initial;box-sizing:border-box;cursor:pointer;text-align:center;font:20px/24px sans-serif;color:#647168;width:25px;height:25px;border-radius:5px}button:hover{background:#e6e9df}button:focus-visible{outline:2px solid #648971}
+    :host([data-large]) .window{height:100%;display:flex;flex-direction:column;border-radius:0}
+    :host([data-large]) header{cursor:default;flex-shrink:0}
+    :host([data-large]) iframe{height:0!important;flex:1;min-height:0;max-height:none}
     iframe{display:block;width:100%;height:390px;border:0;background:#f6f4ee;max-height:calc(100vh - 64px)}
-  </style><div class="window"><header title="拖动标题栏移动浮窗" data-i18n-title="拖动标题栏移动浮窗"><span data-i18n="试衣镜bling"></span><div class="actions"><button class="language" title="Switch language / 切换语言">EN</button><button class="settings" aria-label="设置 Decart 密钥" data-i18n-aria-label="设置 Decart 密钥" title="本地助手设置" data-i18n-title="本地助手设置">⚙</button><button class="minimize" aria-label="缩小为网页标签" data-i18n-aria-label="缩小为网页标签" title="收起并关闭摄像头" data-i18n-title="收起并关闭摄像头">−</button><button class="close" aria-label="关闭试衣镜" data-i18n-aria-label="关闭试衣镜" title="关闭试衣镜" data-i18n-title="关闭试衣镜">×</button></div></header></div>`;
+  </style><div class="window"><header title="拖动标题栏移动浮窗" data-i18n-title="拖动标题栏移动浮窗"><span data-i18n="试衣镜bling"></span><div class="actions"><button class="language" title="Switch language / 切换语言">EN</button><button class="settings" aria-label="设置 Decart 密钥" data-i18n-aria-label="设置 Decart 密钥" title="本地助手设置" data-i18n-title="本地助手设置">⚙</button><button class="maximize" aria-label="放大试衣镜" data-i18n-aria-label="放大试衣镜" title="放大试衣镜" data-i18n-title="放大试衣镜">⛶</button><button class="minimize" aria-label="缩小为网页标签" data-i18n-aria-label="缩小为网页标签" title="收起并关闭摄像头" data-i18n-title="收起并关闭摄像头">−</button><button class="close" aria-label="关闭试衣镜" data-i18n-aria-label="关闭试衣镜" title="关闭试衣镜" data-i18n-title="关闭试衣镜">×</button></div></header></div>`;
   document.documentElement.append(room);
   let roomPosition = window.__blingRoomPosition || { x: innerWidth - 344, y: 80 };
+  let large = false;
+  let nativeFullscreen = false;
+  let panelHeight = 390;
   function placeRoom() {
+    if (large) {
+      const margin = document.fullscreenElement === room ? 0 : 8;
+      room.style.width = innerWidth - margin * 2 + "px";
+      room.style.height = innerHeight - margin * 2 + "px";
+      room.style.maxWidth = "none";
+      room.style.left = room.style.top = margin + "px";
+      return;
+    }
+    room.style.width = "320px";
+    room.style.height = "auto";
+    room.style.maxWidth = "calc(100vw - 16px)";
     roomPosition.x = Math.max(8, Math.min(roomPosition.x, innerWidth - (room.offsetWidth || 320) - 8));
     roomPosition.y = Math.max(8, Math.min(roomPosition.y, innerHeight - (room.offsetHeight || 400) - 8));
     room.style.left = roomPosition.x + "px"; room.style.top = roomPosition.y + "px";
@@ -63,7 +80,10 @@ export function installHoverPicker({ minimized = false, panelUrl, language = "en
       frame.allow = "camera *; autoplay *";
       frame.src = panelUrl;
       roomShadow.querySelector(".window").append(frame);
-    } else if (!expanded) frame?.remove();
+    } else if (!expanded) {
+      void restoreSize();
+      frame?.remove();
+    }
     showDock(!expanded);
     if (expanded) placeRoom();
   }
@@ -83,18 +103,56 @@ export function installHoverPicker({ minimized = false, panelUrl, language = "en
         }
       }
     }
+    const maximize = roomShadow.querySelector(".maximize");
+    const sizeLabel = large ? "还原试衣镜" : "放大试衣镜";
+    maximize.textContent = large ? "⤢" : "⛶";
+    for (const attribute of ["title", "aria-label"]) {
+      maximize.setAttribute("data-i18n-" + attribute, sizeLabel);
+      maximize.setAttribute(attribute, t(sizeLabel));
+    }
     const frame = roomShadow.querySelector("iframe");
     if (frame) frame.title = t("试衣镜bling");
   }
   roomShadow.querySelector(".language").addEventListener("click", () => {
     void chrome.storage.local.set({ blingLanguage: language === "zh" ? "en" : "zh" });
   });
+  function setSize(value) {
+    large = value;
+    room.toggleAttribute("data-large", large);
+    const frame = roomShadow.querySelector("iframe");
+    if (frame && !large) frame.style.height = panelHeight + "px";
+    placeRoom();
+    renderLanguage();
+    void chrome.runtime.sendMessage({ target: "background", type: "mirror-size-changed", large }).catch(() => {});
+  }
+  async function restoreSize() {
+    if (document.fullscreenElement === room) {
+      try { await document.exitFullscreen(); } catch {}
+    }
+    setSize(false);
+  }
+  async function toggleSize() {
+    if (large) { await restoreSize(); return; }
+    setSize(true);
+    try { await room.requestFullscreen(); } catch { /* Keep viewport enlargement if fullscreen is blocked. */ }
+    placeRoom();
+  }
+  function onFullscreenChange() {
+    const active = document.fullscreenElement === room;
+    if (nativeFullscreen && !active) setSize(false);
+    nativeFullscreen = active;
+    if (active) placeRoom();
+  }
+  function onKey(event) { if (event.key === "Escape" && large) void restoreSize(); }
+  document.addEventListener("fullscreenchange", onFullscreenChange);
+  document.addEventListener("keydown", onKey);
+  roomShadow.querySelector(".maximize").addEventListener("click", () => void toggleSize());
   renderLanguage();
   expand(!minimized);
   const header = roomShadow.querySelector("header");
   let roomDrag = null;
   header.addEventListener("pointerdown", (event) => {
-    if (event.button !== 0 || event.target.closest("button")) return;
+    if (large || event.button !== 0 || event.target.closest("button")) return;
     roomDrag = { x: event.clientX, y: event.clientY, left: roomPosition.x, top: roomPosition.y };
     header.setPointerCapture(event.pointerId);
   });
@@ -194,20 +252,27 @@ export function installHoverPicker({ minimized = false, panelUrl, language = "en
     } catch { remove(); }
     finally { pending = button.disabled = false; }
   });
-  function onMessage(message, sender) {
+  function onMessage(message, sender, reply) {
     if (sender.id !== chrome.runtime.id || sender.tab) return;
+    if (message.type === "get-mirror-size") { reply({ large }); return; }
+    if (message.type === "toggle-mirror-size") void toggleSize();
+    if (message.type === "restore-mirror-size") void restoreSize();
     if (message.type === "locale-changed") { language = message.language; renderLanguage(); }
     if (message.type === "remove-hover-picker") remove();
     if (message.type === "panel-visibility") expand(message.expanded);
     if (message.type === "panel-size") {
       const frame = roomShadow.querySelector("iframe");
-      if (frame && Number.isFinite(message.height)) {
-        frame.style.height = Math.max(100, Math.min(600, message.height)) + "px";
+      if (frame && !large && Number.isFinite(message.height)) {
+        panelHeight = Math.max(100, Math.min(600, message.height));
+        frame.style.height = panelHeight + "px";
         placeRoom();
       }
     }
   }
   function remove() {
+    if (document.fullscreenElement === room) void document.exitFullscreen().catch(() => {});
+    document.removeEventListener("fullscreenchange", onFullscreenChange);
+    document.removeEventListener("keydown", onKey);
     clearTimeout(hideTimer);
     document.removeEventListener("pointerover", hover, true);
     window.removeEventListener("scroll", place, true);

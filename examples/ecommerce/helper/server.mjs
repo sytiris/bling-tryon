@@ -57,7 +57,7 @@ export async function createHelperServer({ dataDir = defaultDataDir(), inherited
         return reply(204, "", "text/plain");
       }
       if (request.method === "GET" && path === "/api/health") {
-        return reply(200, { service: "bling-helper", version: "1.1.1", configured: Boolean(store.get()),
+        return reply(200, { service: "bling-helper", version: "1.2.0", configured: Boolean(store.get()),
           credentialVersion: instance + ":" + credentialRevision, model: "lucy-vton-latest", tokenTtlSeconds: 60,
           maxSessionSeconds: { quick: 45, extended: 55 } });
       }

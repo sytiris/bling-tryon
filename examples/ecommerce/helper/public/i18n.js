@@ -7,6 +7,8 @@ export const english = {
   "AI 试穿画面": "AI try-on video",
   "最后一帧试穿效果": "Last try-on frame",
   "把自己放在画面中央": "Stand in the center of the frame",
+  "站在画面中央": "Stand in the center",
+  "稍微后退，让头部和上半身保持在框内": "Step back slightly and keep your head and upper body inside the outline",
   "开启摄像头？": "Enable your camera?",
   "点击试穿后才向 AI 发送画面": "Video is sent to AI only when you start a try-on",
   "同意，开启": "Allow camera",
@@ -175,7 +177,19 @@ export const english = {
   "打开 ": "Open ",
   "点击「加载未打包的扩展程序」，选择安装包里的 ": "Click Load unpacked and select the ",
   " 文件夹。": " folder from the package. ",
-  "回到购物网页，点插件图标。选一件衣服，允许摄像头，再点 ": "Return to a shopping page and click the extension icon. Choose an item, allow your camera, then click "
+  "回到购物网页，点插件图标。选一件衣服，允许摄像头，再点 ": "Return to a shopping page and click the extension icon. Choose an item, allow your camera, then click ",
+  "试穿回放": "Try-on replay",
+  "回放": "Replay",
+  "播放回放": "Play replay",
+  "暂停回放": "Pause replay",
+  "重新播放": "Replay again",
+  "停止回放": "Stop replay",
+  "关闭回放": "Close replay",
+  "下载视频": "Download video",
+  "视频进度": "Video progress",
+  "放大试衣镜": "Enlarge mirror",
+  "还原试衣镜": "Restore mirror",
+  "本次视频未能录制，已保留最后一帧。": "The video could not be recorded. The last frame is still available."
 };
 
 export function normalizeLanguage(language = "en") {

@@ -15,7 +15,7 @@ test("all shipped static UI phrases and Chinese error messages have English tran
     const source = await readFile(new URL("../" + file, import.meta.url), "utf8");
     for (const [, key] of source.matchAll(/data-i18n(?:-[a-z-]+)?="([^"]+)"/g)) assert.ok(english[key], file + ": " + key);
   }
-  for (const file of ["helper/server.mjs", "helper/decart.mjs", "helper/config.mjs", "extension/src/panel.mjs", "extension/src/garment.mjs", "extension/src/settings.mjs"]) {
+  for (const file of ["helper/server.mjs", "helper/decart.mjs", "helper/config.mjs", "extension/src/panel.mjs", "extension/src/garment.mjs", "extension/src/settings.mjs", "extension/src/replay.mjs"]) {
     const source = await readFile(new URL("../" + file, import.meta.url), "utf8");
     for (const [, key] of source.matchAll(/"([^"\n]*[\u4e00-\u9fff][^"\n]*)"/g)) assert.ok(english[key], file + ": " + key);
   }
