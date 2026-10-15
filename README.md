@@ -1,67 +1,73 @@
-# 试衣镜bling
+**English** | [简体中文](README.zh-CN.md)
 
-**bling-tryon**：在购物网页里挑一件衣服，用实时 AI 看看上身效果。Chrome 网页浮窗＋本地助手，每位用户使用自己的 Decart API Key（BYOK）。
+# Bling Try-On · 试衣镜bling
 
-![本地助手配置页](docs/assets/local-helper.png)
+Pick clothing on a shopping website and preview it with live AI. A draggable Chrome fitting mirror and a local helper, using **your own Decart API key (BYOK)**.
 
-永久密钥保存在用户自己电脑的本地助手中；插件只接收短期令牌。没有作者托管的密钥服务，试衣镜不另设账号或订阅，也不接入其他付费AI接口。试穿费用由用户自己的 Decart 账户承担。
+![Local helper setup](docs/assets/local-helper-en.png)
 
-> 当前为可试用版本，提供 macOS/ARM64、Windows/X64、Linux/X64 自动构建包；本机实测平台为 macOS Apple Silicon。Windows/Linux 的摄像头与购物网站兼容性仍需对应设备验证，其他架构可从源码构建。系统签名/公证安装器尚未提供。
+Your permanent key stays on your computer. The extension receives short-lived client tokens only. There is no author-hosted key service, extra account or subscription, or other paid AI provider. Decart bills usage to your own account.
 
-## 安装
+> Preview release. Packages are built for macOS/ARM64, Windows/X64 and Linux/X64. Hands-on testing has been on macOS Apple Silicon; real camera and shopping-site compatibility on Windows/Linux still needs device testing. Other architectures require a source build. Signed/notarized installers are not available yet.
 
-优先使用本仓库 **[Releases](https://github.com/sytiris/bling-tryon/releases)** 中与你系统和芯片匹配的完整安装包，内含本地助手、Node运行时及Chrome扩展。
+## Install
 
-1. 解压整个安装包到固定位置，运行「启动试衣镜bling」启动器，保持终端开启。
-2. 启动器会打开 `http://127.0.0.1:3000/setup`；尚未配置 Key 时，还会自动打开 [Decart API Keys 页面](https://platform.decart.ai/api-keys)。先按下方说明注册/登录、创建 Key，再回到本机页面点击「验证并保存」。验证只申请短期令牌，不启动摄像头或生成视频。
-3. Chrome 打开 `chrome://extensions`，开启「开发者模式」，点击「加载未打包的扩展程序」，选择包内 `chrome-tryon` 文件夹。
-4. 打开 HTTPS 购物页，点击插件图标。移到衣服图片上点「试试这件」，允许摄像头后主动点 **10 秒 / 20 秒**。
+Download the full package matching your OS and architecture from [Releases](https://github.com/sytiris/bling-tryon/releases). Verify it against `SHA256SUMS.txt` and extract the **entire** package to a permanent folder. It includes the local helper, Node runtime and Chrome extension.
 
-浮窗标题栏可拖动；「−」收起成可拖动小标签；「⚙」打开助手设置。插件不会因网页获得焦点而自动关闭。
+1. Run `start-macos.command` (macOS), `start-windows.cmd` (Windows) or `start-linux.sh` (Linux). Keep the helper terminal open. The original Chinese launcher names are also available.
+2. The launcher opens `http://127.0.0.1:3000/setup`. If no key is configured, it also opens [Decart API Keys](https://platform.decart.ai/api-keys). Sign up/log in, create your key, and enter it on **your local setup page**. Click **Verify & save**. Verification requests a temporary token; it does not enable your camera or generate video.
+3. In Chrome, open `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, and select the package's `chrome-tryon` folder.
+4. Open an HTTPS shopping page and click the extension icon. Hover over a clothing image and click **Try this**. Allow the camera, then click **10 sec / 20 sec** to start.
 
-详细说明：[安装、费用与已知限制](examples/ecommerce/helper/README.md) · [隐私与数据流](examples/ecommerce/helper/PRIVACY.md)
+Drag the title bar to move the mirror. **−** minimizes it to a draggable tab; **⚙** opens helper settings. Clicking elsewhere on the shopping page leaves the mirror open.
 
-## 注册 Decart、获取试用积分和设置 API Key
+[Detailed installation, costs and limits](examples/ecommerce/helper/README.md) · [Privacy and data flow](examples/ecommerce/helper/PRIVACY.md)
 
-1. 打开 [Decart API 控制台](https://platform.decart.ai/)，自行完成注册/登录和页面要求的验证。
-2. 在控制台查看账户余额或试用额度。[官方价格说明](https://docs.platform.decart.ai/getting-started/pricing#faq)目前写明新账户有免费试用额度；具体金额、有效期和使用条件以你的控制台为准。本项目不发放积分，也不会自动充值。Decart API 按使用量计费，无需购买订阅会员。
-3. 进入 [API Keys](https://platform.decart.ai/api-keys)，使用页面的创建按钮生成一个 Key，并复制。可参考 [官方 API Key 指南](https://docs.platform.decart.ai/getting-started/authentication)。
-4. 回到本机助手 `http://127.0.0.1:3000/setup`，将 Key 粘贴到密码输入框，点击「验证并保存」。看到验证通过后，再加载 Chrome 扩展。
-5. 打开购物网页，自己允许摄像头并点击 10 秒或 20 秒开始试穿。Key 验证通过不代表余额一定充足；额度不足时回 Decart 控制台查看或自行决定是否充值。
+## Language
 
-Key 只填写到你自己电脑的助手页面，不要发给智能体、聊天、Issue 或截图。以后可在助手页测试、更换或删除；撤销已泄露的 Key 需要到 Decart 控制台操作。
+The extension and helper follow your browser language: Chinese for Chinese browser locales, English otherwise. Use **EN / 中** in the mirror title bar, or the language button in extension settings and the helper, to switch. Extension and helper preferences are saved separately. Switching text does not restart the camera or a try-on. Chrome's extension-list name follows Chrome's own language: **Bling Try-On** in English and **试衣镜bling** in Chinese.
 
-## 让你的智能体帮你安装
+## Create a Decart account, check credits and set your key
 
-把这一句话交给能操作你电脑的智能体：
+1. Visit the [Decart API console](https://platform.decart.ai/) and complete sign-up/login and any required verification yourself.
+2. Check your balance or trial credits in the console. The [official pricing FAQ](https://docs.platform.decart.ai/getting-started/pricing#faq) currently says new accounts receive free credits. Amounts, expiry and eligibility are determined by your console. This project does not issue credits or top up your account. The API is pay-as-you-go and does not require a subscription membership.
+3. Create and copy a key on [API Keys](https://platform.decart.ai/api-keys). See the [official authentication guide](https://docs.platform.decart.ai/getting-started/authentication).
+4. Paste it into the password field at `http://127.0.0.1:3000/setup` and click **Verify & save**.
+5. Return to a shopping page, allow the camera yourself, and click 10 sec or 20 sec. Successful token verification does not guarantee enough balance for generation. If credits are insufficient, check Decart and decide yourself whether to add funds.
 
-> 请帮我在这台电脑下载安装并启动 https://github.com/sytiris/bling-tryon，先阅读仓库 AGENTS.md，打开 Decart 注册/API Key 页面和本机配置页，让我自己完成注册及密钥填写，再引导我加载 Chrome 扩展。
+Enter keys only on your own local helper page. Do not share them with an agent, in chat, issues or screenshots. You can test, replace or delete the local key in setup. Revoke a leaked key in the Decart console.
 
-智能体安装步骤见 [AGENTS.md](AGENTS.md)：选择匹配系统/芯片的最新完整发布包、校验并解压、运行启动器、给出扩展目录。未配置 Key 时，启动器会自动打开 Decart API Keys 页面，用户可从该页面的登录/注册入口继续；已配置时只打开本机设置页，不重复打开 Decart。
+## Ask your local agent to install it
 
-自动下载安装和弹出网页需要智能体具备本机文件、终端与浏览器操作能力。无法打开桌面浏览器时，应给出上述两个地址供用户手动打开。用户自行完成注册、验证码、条款确认、密钥粘贴以及扩展/摄像头权限确认；智能体不代替用户充值或自动开始付费试穿。
+Give this instruction to an agent that can operate your computer:
 
-## 试穿与停止
+> Download, install and start https://github.com/sytiris/bling-tryon on this computer. Read the repository AGENTS.md first, open the Decart sign-up/API Keys page and local setup page, let me complete registration and enter my key myself, then guide me through loading the Chrome extension.
 
-- 两档均为 `lucy-vton-latest` 标准模式。10/20秒从**第一帧出现**后开始计算，不是账单时长承诺；连接等待期间已开始生成的时间也可能收费。
-- 开始试穿后隐藏原摄像头画面。到点断开AI，保留最后一帧和本地相机；下一次必须主动点击。
-- 关闭相机、收起/关闭浮窗、网页隐藏或刷新会停止生成；助手退出或密钥变化时也尽快停止。
-- 出错或断连不自动重试。首帧等待上限30秒，客户端及服务端总时限45/55秒用于兜底。
-- 实际上传前截取中心正方形，再补黑边保持1280×720；裁剪不会降低Decart每秒费用。
+[AGENTS.md](AGENTS.md) covers selecting the latest matching package, verifying checksums, extracting, starting and locating the extension folder. With no saved key, the launcher opens Decart API Keys, where you can continue to login/sign-up. With a configured key, it opens local setup only. Refreshing setup never opens an external page.
 
-![网页浮窗示意](docs/assets/mirror.png)
+The agent needs local file, terminal and browser capabilities. If it cannot open a desktop browser, it should provide clickable URLs instead. Registration, verification codes, terms, payments, key entry, and extension/camera permission decisions stay with you. Installation does not automatically start a paid try-on.
 
-上图来自合成摄像头的技术验证，用于展示界面与输出链路，不能代表真人上身贴合效果。
+## Sessions and stopping
 
-## 适用边界
+- Both durations use `lucy-vton-latest` **standard mode**. The 10/20-second timer starts at the **first decoded frame**. This is not a promise of billable duration; generation before the first frame may also be charged.
+- Starting a try-on hides the original camera feed. At the deadline, AI disconnects while the last frame and local camera remain available. Another try-on requires a deliberate click.
+- Camera off, minimizing/closing the mirror, hiding/refreshing the shopping page, helper loss and key changes stop generation as soon as possible.
+- Errors do not trigger automatic retries. The first-frame timeout is 30 seconds; client and server caps of 45/55 seconds provide a fallback.
+- Input is cropped to the center square, then padded to 1280×720. Cropping does **not** lower Decart's per-second rate.
 
-网页图片使用尺寸和页面结构筛选，不能保证自动识别所有服装。CSS背景图、跨域iframe、封闭组件及防盗链图片可能不可读。部分购物网站禁止嵌入页面使用摄像头，此时插件会明确提示；Chrome内部页面及扩展商店不能注入浮窗。
+![Floating mirror demonstration](docs/assets/mirror.png)
 
-本地助手只监听127.0.0.1。Key保存在用户配置目录，不写入扩展、源码、日志或发布包，不经由作者的服务器。配置文件不是加密保险库，本机有相应文件权限的程序仍可读取。Decart接收并处理生成所需的数据，其服务条款、隐私政策和账户设置仍然适用。
+This image comes from a synthetic-camera technical test. It illustrates the interface and video path, not real-person garment fit.
 
-## 从源码运行
+## Limits
 
-使用Node **24.14.1或更高的24.x版本**。本机发布包携带经过本机验证的运行时；需要别的平台包时在对应平台构建。
+Image selection uses image size and page structure; it cannot identify every garment. CSS backgrounds, cross-origin frames, closed components, protected or login-only images may be inaccessible. Some sites block camera use inside embedded windows. Chrome internal pages and the Web Store cannot host the mirror.
+
+The helper listens on 127.0.0.1 only. Keys are saved in the user's local configuration directory and never included in the extension, source, logs or release packages, or routed through the author's servers. This file is not an encrypted vault: local programs with sufficient file permissions can read it. Decart processes the data needed for generation under its own terms, privacy policy and account settings.
+
+## Build from source
+
+Use Node **24.14.1 or a later 24.x version**. Build on the target platform for a matching runtime.
 
 ```bash
 cd examples/ecommerce
@@ -71,24 +77,23 @@ npm run typecheck
 npm run build:release
 ```
 
-生成的完整目录位于仓库根 `dist/bling-tryon-<platform>-<arch>/`，运行其中的启动器。构建不需要任何API Key，不要在CI中配置你的永久密钥。
+The full package is created at repository root `dist/bling-tryon-<platform>-<arch>/`. Run its launcher. Building does not require an API key; do not add your permanent key to CI.
 
-仅调试助手：`npm run helper`。可用 `BLING_DATA_DIR` 指定本机配置目录；也支持从服务端环境变量 `DECART_API_KEY` 初次读取密钥。配置页保存的值优先，删除操作会阻止旧环境值在下次启动时恢复。
+For helper-only debugging: `npm run helper`. `BLING_DATA_DIR` overrides the local configuration directory. A server environment variable `DECART_API_KEY` can supply the initial key; a value saved in setup takes precedence. Deleting it prevents the old environment value from returning at the next start. `BLING_LANGUAGE=en` or `zh` overrides terminal language; web UI language follows the browser.
 
-需要HTTP代理时，启动前设置自己的 `TRYON_PROXY_URL`，或使用已有 `HTTP_PROXY`/`HTTPS_PROXY`。发布启动器启用Node的环境代理支持，且绕过本机地址，不修改系统代理。
+If you need an HTTP proxy, set your own `TRYON_PROXY_URL`, or inherit `HTTP_PROXY`/`HTTPS_PROXY`. Release launchers enable Node environment-proxy support and bypass local addresses; they do not change system proxy settings.
 
-原有Next.js电商示例仍保留在 `examples/ecommerce`，可单独运行 `npm run dev`。它与助手默认共用3000端口，需先关闭其中一个服务。
+The original Next.js ecommerce demo is retained at `examples/ecommerce` (`npm run dev`). It shares default port 3000 with the helper, so stop one before running the other. That legacy demo and untouched upstream examples retain their original languages; the distributed Chrome tool and helper are bilingual.
 
-## 项目结构
+## Source layout and license
 
-- `examples/ecommerce/extension/`：网页选衣、可拖动浮窗、相机与WebRTC生命周期。
-- `examples/ecommerce/helper/`：独立本地服务、密钥配置页、短期Token签发。
-- `examples/ecommerce/scripts/`：SDK取消补丁、扩展与完整发布包构建。
-- `examples/ecommerce/tests/`：计时、取消连接、配置保护和Token约束测试。
-- 其余 `examples/`：上游原有示例，保留作参考。
+- `examples/ecommerce/extension/`: page picker, draggable mirror, camera and WebRTC lifecycle.
+- `examples/ecommerce/helper/`: local server, key setup and temporary-token issuing.
+- `examples/ecommerce/helper/public/i18n.js`: shared Chinese/English UI phrases.
+- `examples/ecommerce/scripts/`: SDK cancellation patch and package builds.
+- `examples/ecommerce/tests/`: timer, cancellation, configuration, token and locale checks.
+- Other `examples/`: upstream examples kept for reference.
 
-## 来源与许可
+Based on [DecartAI/tryon-examples](https://github.com/DecartAI/tryon-examples) and the Decart JavaScript SDK. The [MIT License](LICENSE) and [third-party notices](THIRD_PARTY_NOTICES.md) are preserved; packages also contain bundled dependency and Node runtime licenses. This tool is not affiliated with Decart.
 
-基于 [DecartAI/tryon-examples](https://github.com/DecartAI/tryon-examples) 修改，使用Decart JavaScript SDK。保留原项目 [MIT License](LICENSE) 和 [第三方声明](THIRD_PARTY_NOTICES.md)；发布包另含SDK依赖与Node运行时许可。本工具与Decart官方无隶属关系。
-
-反馈问题时请只提供复现步骤和脱敏错误，不要上传API Key、Token、私人购物页面或摄像头画面。
+When reporting issues, provide reproduction steps and redacted errors only. Do not upload keys, tokens, private shopping pages or camera footage.

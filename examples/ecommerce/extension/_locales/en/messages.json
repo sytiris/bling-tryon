@@ -1,0 +1,11 @@
+{
+  "extensionName": {
+    "message": "Bling Try-On"
+  },
+  "extensionDescription": {
+    "message": "A draggable fitting mirror: hover to pick clothing, then try it on live for 10 or 20 seconds."
+  },
+  "actionTitle": {
+    "message": "Open Bling Try-On"
+  }
+}

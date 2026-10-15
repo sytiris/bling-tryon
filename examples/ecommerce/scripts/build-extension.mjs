@@ -15,7 +15,7 @@ const id = [...createHash("sha256").update(Buffer.from(manifest.key, "base64")).
   .map((byte) => String.fromCharCode(97 + (byte >> 4), 97 + (byte & 15))).join("");
 if (!readFileSync(resolve(root, "lib/extension-id.ts"), "utf8").includes(id)) throw new Error("Extension ID mismatch");
 mkdirSync(dest, { recursive: true });
-for (const file of ["manifest.json", "panel.html", "panel.css", "settings.html", "settings.css", "README.txt"]) cpSync(resolve(root, "extension", file), resolve(dest, file));
+for (const file of ["manifest.json", "panel.html", "panel.css", "settings.html", "settings.css", "README.txt", "_locales"]) cpSync(resolve(root, "extension", file), resolve(dest, file), { recursive: true });
 await build({ entryPoints: [resolve(root, "extension/src/settings.mjs")], outfile: resolve(dest, "settings.js"), bundle: true, format: "esm", target: "chrome121", minify: true });
 const bundled = await build({ metafile: true, entryPoints: [resolve(root, "extension/src/panel.mjs")], outfile: resolve(dest, "panel.js"), bundle: true, format: "esm", platform: "browser", target: "chrome121", minify: true, legalComments: "eof" });
 await build({ entryPoints: [resolve(root, "extension/src/background.mjs")], outfile: resolve(dest, "background.js"), bundle: true, format: "esm", platform: "browser", target: "chrome121", minify: true });

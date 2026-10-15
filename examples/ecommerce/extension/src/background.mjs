@@ -1,3 +1,4 @@
+import { english, normalizeLanguage } from "../../helper/public/i18n.js";
 import { installHoverPicker } from "./page-tools.mjs";
 
 const stateKeys = ["sourceTabId", "selectedItem", "panelOpen"];
@@ -7,8 +8,10 @@ async function notifyPage(tabId, message) {
   if (Number.isInteger(tabId)) return chrome.tabs.sendMessage(tabId, message).catch(() => null);
 }
 async function enablePicker(tabId, expanded) {
+  const { blingLanguage } = await chrome.storage.local.get("blingLanguage");
+  const language = normalizeLanguage(blingLanguage || chrome.i18n.getUILanguage());
   await chrome.scripting.executeScript({ target: { tabId }, func: installHoverPicker,
-    args: [{ minimized: !expanded, panelUrl: chrome.runtime.getURL("panel.html") }] });
+    args: [{ language, strings: english, minimized: !expanded, panelUrl: chrome.runtime.getURL("panel.html") }] });
 }
 async function activateSource(tab) {
   const previous = await getState();
@@ -78,4 +81,10 @@ chrome.runtime.onMessage.addListener((message, sender, reply) => {
     throw new Error("Invalid action");
   })().then(reply, () => reply({ ok: false, error: "请在购物页面重新点击插件图标启用试衣镜" }));
   return true;
+});
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area !== "local" || !changes.blingLanguage) return;
+  void getState().then(state => notifyPage(state.sourceTabId, { type: "locale-changed",
+    language: normalizeLanguage(changes.blingLanguage.newValue || chrome.i18n.getUILanguage()) }));
 });

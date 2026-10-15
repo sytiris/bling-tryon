@@ -1,23 +1,24 @@
-试衣镜bling · Chrome 121+
+Bling Try-On / 试衣镜bling — Chrome 121+
 
-更新：先关闭旧版窗口/侧栏，在 chrome://extensions 刷新试衣镜bling，确认版本0.4.0，再刷新购物页。
-仍加载原来的 chrome-tryon 文件夹；扩展ID不变。新版为网页内浮窗，移除了sidePanel权限。
-本机后端：http://localhost:3000，运行 outputs/启动本地试衣.command 并保持终端开启。
+ENGLISH
+Use the full release package with its local helper. Run start-macos.command,
+start-windows.cmd or start-linux.sh; keep the terminal open. Configure your own
+Decart key at http://127.0.0.1:3000/setup. Never put it inside this extension.
+Load this chrome-tryon folder via chrome://extensions > Developer mode > Load unpacked.
+Open an HTTPS shopping page, click the extension icon, hover an image > Try this.
+Allow the camera, then click 10 sec / 20 sec. AI stops after the first-frame timer;
+another try-on requires a click. Camera off, minimizing/closing, hiding/refreshing
+or errors stop the session. No automatic paid retries. Drag the title bar to move.
+Language follows Chrome; switch via EN / 中 in the title bar or settings.
+The manifest key is a public extension-identity key, not a Decart credential.
+Read README.md and PRIVACY.md in the full package for billing and limitations.
 
-购物页点击插件图标，出现320px宽的浮窗。按住顶部「试衣镜bling」标题栏拖动。
-鼠标移到商品图片，点击右上角半透明白色「试试这件」，浮窗状态显示「就试它啦✨」。
-允许相机后主动点击10秒或20秒，才启动AI；关闭摄像头按钮与两档按钮同一行。
-第一帧后10/20秒断开AI，只留下效果图，本地相机保留供下次试穿。不会自动再次生成。
-
-顶部−收起成可拖动小标签：停止AI并关闭相机；点击标签展开后需再次主动开启相机。
-顶部×或标签×关闭整套组件。刷新网页、隐藏页面、API错误或断连也会停止当前会话。
-选衣与浮窗可以同时使用，浮窗不会因为点击网页而自动关闭。
-
-摄像头按中心正方形取景。实际上传前裁掉两侧内容，再补黑边以兼容模型1280x720规格。
-Decart按生成时长计费，正方形裁剪不降低每秒费用。仍用标准模式，不启用双倍费用fast模式。
-连接首帧等待上限30秒，前端绝对时限和服务端兜底45/55秒；10/20秒不等于账单秒数。
-
-按本次要求，已删除下方说明、服装卡片、上传入口及页脚。直接在网页图片上选衣。
-Chrome内部页面无法注入浮窗；网站权限策略、防盗链等可能影响相机或图片读取。
-此包不含后端或永久API Key。manifest.json的key是公开扩展标识公钥。
-详细说明见 ZIP 外的 Chrome插件安装与验证.md。
+简体中文
+本扩展需要完整发布包中的本地助手。运行对应系统启动器并保持终端开启，
+在 http://127.0.0.1:3000/setup 配置你自己的 Decart Key；不要写进扩展。
+打开 chrome://extensions，开启开发者模式，加载本 chrome-tryon 文件夹。
+在 HTTPS 购物页点插件图标，悬浮图片点「试试这件」，允许相机后主动点击10秒/20秒。
+出画后到点断开AI，再次生成须主动点击。关闭相机、收起/关闭、隐藏/刷新和异常会停止会话。
+标题栏可拖动，−收起为标签；语言跟随Chrome，标题栏或设置中的语言按钮可手动切换。
+manifest 的 key 是公开扩展标识公钥，并非 Decart 密钥。
+完整安装包内 README.zh-CN.md 和 PRIVACY.zh-CN.md 包含费用与限制说明。

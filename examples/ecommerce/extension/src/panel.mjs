@@ -1,8 +1,12 @@
+import { english } from "../../helper/public/i18n.js";
+import { createLocale } from "./locale.mjs";
 import { createDecartClient, models } from "@decartai/sdk";
 import { createTrialTimer } from "./trial-timer.mjs";
 import { createCenteredInput } from "./centered-input.mjs";
 import { fetchGarment, prepareGarment } from "./garment.mjs";
 
+const locale = await createLocale();
+const t = locale.t;
 const backend = "http://localhost:3000";
 const $ = (id) => document.getElementById(id);
 const stage = document.querySelector(".stage");
@@ -38,12 +42,12 @@ let helperChecking = false;
 let helperError = "";
 
 
-function message(text) { $("status").textContent = text; }
-function error(text = "") { $("error").textContent = text; $("error").hidden = !text; }
+function message(text, values) { locale.text($("status"), text, values); }
+function error(text = "") { locale.text($("error"), text); $("error").hidden = !text; }
 function loading(text) {
   loadingPhase = text;
   $("loading").hidden = !text;
-  $("loading-text").textContent = text;
+  locale.text($("loading-text"), text);
 }
 function updateButtons() {
   $("quick").disabled = !authorized || !helperReady || !cameraStream || busy || !selectedUrl;
@@ -54,10 +58,10 @@ function clearSnapshot() {
   stage.classList.remove("finished");
   if (stage.classList.contains("tried")) {
     $("placeholder").hidden = false;
-    $("placeholder").querySelector("p").textContent = "点击 10s / 20s 开始下一次试穿";
+    locale.text($("placeholder").querySelector("p"), "点击 10s / 20s 开始下一次试穿");
   }
 }
-function stopTrial(text = "试穿已停止", keepFrame = true) {
+function stopTrial(text = "试穿已停止", keepFrame = true, values) {
   // Capture a local last frame before closing the media stream. Never save/upload it.
   let captured = false;
   try { if (keepFrame && output.readyState >= 2 && firstFrameAt !== null) {
@@ -92,12 +96,12 @@ function stopTrial(text = "试穿已停止", keepFrame = true) {
   stage.classList.toggle("finished", captured);
   if (stage.classList.contains("tried")) {
     $("placeholder").hidden = captured;
-    $("placeholder").querySelector("p").textContent = "本次试穿已停止 · 可重新选择衣服";
+    locale.text($("placeholder").querySelector("p"), "本次试穿已停止 · 可重新选择衣服");
   }
   $("countdown").hidden = true;
   $("preview-tag").hidden = !cameraStream || stage.classList.contains("tried");
   loading("");
-  message(text);
+  message(text, values);
   updateButtons();
 }
 function closeCamera() {
@@ -108,7 +112,7 @@ function closeCamera() {
   camera.srcObject = null;
   stage.classList.remove("tried");
   clearSnapshot();
-  $("placeholder").querySelector("p").textContent = "把自己放在画面中央";
+  locale.text($("placeholder").querySelector("p"), "把自己放在画面中央");
   $("controls").hidden = true;
   $("consent").hidden = false;
   $("placeholder").hidden = false;
@@ -173,9 +177,9 @@ function firstFrame(id) {
   loading("");
   $("preview-tag").hidden = true;
   $("countdown").hidden = false;
-  $("latency").textContent = "首帧 " + ((firstFrameAt - runStartedAt) / 1000).toFixed(2) + "s";
+  locale.text($("latency"), "首帧 {seconds}s", { seconds: ((firstFrameAt - runStartedAt) / 1000).toFixed(2) });
   trialTimer.startFromFirstFrame();
-  message("试穿中 · 出画后计时 " + chosenSeconds + " 秒");
+  message("试穿中 · 出画后计时 {seconds} 秒", { seconds: chosenSeconds });
 }
 
 async function startTrial(seconds) {
@@ -195,7 +199,7 @@ async function startTrial(seconds) {
   busy = true;
   firstFrameAt = null;
   runStartedAt = performance.now();
-  $("latency").textContent = "";
+  locale.text($("latency"), "");
   stage.classList.add("active", "tried");
   $("placeholder").hidden = true;
   $("preview-tag").hidden = true;
@@ -208,7 +212,7 @@ async function startTrial(seconds) {
     if (sessionEndsAt !== null && Date.now() >= sessionEndsAt) stopTrial("已到安全时限，AI 已断开");
     if (id !== runId) return;
     if (firstFrameAt === null) {
-      $("loading-text").textContent = loadingPhase + " · " + Math.floor((performance.now() - runStartedAt) / 1000) + " 秒";
+      locale.text($("loading-text"), "{phase} · {seconds} 秒", { phase: t(loadingPhase), seconds: Math.floor((performance.now() - runStartedAt) / 1000) });
     } else {
       $("countdown").textContent = Math.max(0, chosenSeconds - (performance.now() - firstFrameAt) / 1000).toFixed(1) + "s";
     }
@@ -228,7 +232,7 @@ async function startTrial(seconds) {
       stopTrial("连接超时，已断开", false);
       error("30 秒内未收到试穿画面，请检查网络或稍后重试");
     }, 30000);
-    trialTimer = createTrialTimer(seconds, () => stopTrial("已完成 " + seconds + " 秒试穿 · AI 已断开"));
+    trialTimer = createTrialTimer(seconds, () => stopTrial("已完成 {seconds} 秒试穿 · AI 已断开", true, { seconds }));
     // Absolute wall-clock cap is never reset by a frame or connection event.
     sessionEndsAt = Date.now() + (seconds + 35) * 1000;
     sessionDeadline = setTimeout(() => {
@@ -242,14 +246,14 @@ async function startTrial(seconds) {
         credentialRequested = true;
         const response = await fetch(backend + "/api/extension-token", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "X-Tryon-Extension": chrome.runtime.id },
+          headers: { "Content-Type": "application/json", "X-Tryon-Extension": chrome.runtime.id, "Accept-Language": locale.language },
           body: JSON.stringify({ duration: seconds }),
           signal: AbortSignal.any([activeController.signal, AbortSignal.timeout(15000)]),
           cache: "no-store",
         }).catch(() => { throw new Error("无法连接本机服务，请先运行启动脚本"); });
         const token = await response.json();
         activeController.signal.throwIfAborted();
-        if (!response.ok) throw new Error(token.error || "短期令牌申请失败");
+        if (!response.ok) throw new Error(token.errorKey || token.error || "短期令牌申请失败");
         if (typeof token.apiKey !== "string" || !token.apiKey) throw new Error("令牌响应不正确");
         loading("建立实时连接");
         return token.apiKey;
@@ -299,7 +303,7 @@ async function startTrial(seconds) {
     if (id !== runId || activeController.signal.aborted) return;
     stopTrial("试穿失败，已断开", false);
     const text = err && typeof err === "object" && "message" in err ? String(err.message) : "试穿连接失败，请检查网络后重试";
-    error(text.replace(/(?:dct_|ek_)[\w.-]+/g, "[redacted]"));
+    error(Object.hasOwn(english, text) ? text : "试穿连接失败，请检查网络后重试");
   }
 }
 
@@ -374,7 +378,7 @@ async function checkHelper() {
     if (!helperReady) {
       helperError = "请点击标题栏 ⚙，在本地助手中配置你自己的 Decart Key。";
       error(helperError);
-    } else if ($("error").textContent === helperError) error();
+    } else if ($("error").dataset.i18n === helperError) error();
   } catch {
     helperReady = false;
     if (busy) stopTrial("本地助手已断开，AI 已停止");

@@ -1,10 +1,13 @@
 // Injected into Chrome's isolated world. No page scripts or AI calls are involved.
-export function installHoverPicker({ minimized = false, panelUrl } = {}) {
+export function installHoverPicker({ minimized = false, panelUrl, language = "en", strings = {} } = {}) {
   if (window.__blingExpand && document.getElementById("bling-floating-room")?.isConnected) {
     window.__blingExpand(!minimized);
     return;
   }
   window.__blingRemovePicker?.();
+  const t = key => language === "zh" ? key : (strings[key] || key);
+  let hoverKey = "试试这件";
+  let dockSelected = false;
   const host = document.createElement("div");
   host.id = "bling-hover-picker";
   host.style.cssText = "all:initial;position:fixed;z-index:2147483646;display:none;";
@@ -13,15 +16,15 @@ export function installHoverPicker({ minimized = false, panelUrl } = {}) {
   style.textContent = `button{all:initial;box-sizing:border-box;display:block;cursor:pointer;font:600 10px/1.3 'PingFang SC',sans-serif;color:#254f3c;background:rgba(255,255,255,.68);backdrop-filter:blur(8px);border:1px solid #ffffff80;border-radius:20px;padding:4px 7px;box-shadow:0 3px 12px #0002;white-space:nowrap}button:hover,button:focus-visible{background:rgba(255,255,255,.9);outline:2px solid #fff;outline-offset:2px}button:disabled{cursor:wait;opacity:.7}`;
   const button = document.createElement("button");
   button.type = "button";
-  button.textContent = "试试这件";
-  button.setAttribute("aria-label", "试试这件");
+  button.textContent = t("试试这件");
+  button.setAttribute("aria-label", t("试试这件"));
   shadow.append(style, button);
   document.documentElement.append(host);
   const dock = document.createElement("div");
   dock.id = "bling-mini-dock";
   dock.style.cssText = "all:initial;position:fixed;z-index:2147483646;";
   const dockShadow = dock.attachShadow({ mode: "open" });
-  dockShadow.innerHTML = `<style>:host{font-family:'PingFang SC',sans-serif}div{display:flex;align-items:center;background:#292d2a;color:#fff;border:1px solid #ffffff60;border-radius:10px;box-shadow:0 5px 20px #0003;overflow:hidden}button{all:initial;box-sizing:border-box;cursor:pointer;color:inherit;font:600 13px/1.4 'PingFang SC',sans-serif;padding:10px 12px;white-space:nowrap}button:first-of-type{touch-action:none;cursor:grab}button:first-of-type:active{cursor:grabbing}button:focus-visible{outline:2px solid #b7d1b8;outline-offset:-3px}.close{color:#b8c1b9;padding:10px}</style><div><button class="open" title="点击展开，拖动可移动位置" aria-label="展开试衣镜bling">⠿　▣ 试衣镜bling</button><button class="close" aria-label="关闭试衣镜">×</button></div>`;
+  dockShadow.innerHTML = `<style>:host{font-family:'PingFang SC',sans-serif}div{display:flex;align-items:center;background:#292d2a;color:#fff;border:1px solid #ffffff60;border-radius:10px;box-shadow:0 5px 20px #0003;overflow:hidden}button{all:initial;box-sizing:border-box;cursor:pointer;color:inherit;font:600 13px/1.4 'PingFang SC',sans-serif;padding:10px 12px;white-space:nowrap}button:first-of-type{touch-action:none;cursor:grab}button:first-of-type:active{cursor:grabbing}button:focus-visible{outline:2px solid #b7d1b8;outline-offset:-3px}.close{color:#b8c1b9;padding:10px}</style><div><button class="open" title="点击展开，拖动可移动位置" data-i18n-title="点击展开，拖动可移动位置" aria-label="展开试衣镜bling" data-i18n-aria-label="展开试衣镜bling">⠿　▣ 试衣镜bling</button><button class="close" aria-label="关闭试衣镜" data-i18n-aria-label="关闭试衣镜">×</button></div>`;
   document.documentElement.append(dock);
   const dockOpen = dockShadow.querySelector(".open");
   let dockPosition = window.__blingDockPosition || { x: innerWidth - 226, y: innerHeight - 66 };
@@ -42,7 +45,7 @@ export function installHoverPicker({ minimized = false, panelUrl } = {}) {
     header:active{cursor:grabbing}em{font:italic 15px Georgia,serif;margin-left:5px}
     .actions{display:flex;gap:3px}button{all:initial;box-sizing:border-box;cursor:pointer;text-align:center;font:20px/24px sans-serif;color:#647168;width:25px;height:25px;border-radius:5px}button:hover{background:#e6e9df}button:focus-visible{outline:2px solid #648971}
     iframe{display:block;width:100%;height:390px;border:0;background:#f6f4ee;max-height:calc(100vh - 64px)}
-  </style><div class="window"><header title="拖动标题栏移动浮窗"><span>试衣镜<em>bling ✧</em></span><div class="actions"><button class="settings" aria-label="设置 Decart 密钥" title="本地助手设置">⚙</button><button class="minimize" aria-label="缩小为网页标签" title="收起并关闭摄像头">−</button><button class="close" aria-label="关闭试衣镜" title="关闭试衣镜">×</button></div></header></div>`;
+  </style><div class="window"><header title="拖动标题栏移动浮窗" data-i18n-title="拖动标题栏移动浮窗"><span data-i18n="试衣镜bling"></span><div class="actions"><button class="language" title="Switch language / 切换语言">EN</button><button class="settings" aria-label="设置 Decart 密钥" data-i18n-aria-label="设置 Decart 密钥" title="本地助手设置" data-i18n-title="本地助手设置">⚙</button><button class="minimize" aria-label="缩小为网页标签" data-i18n-aria-label="缩小为网页标签" title="收起并关闭摄像头" data-i18n-title="收起并关闭摄像头">−</button><button class="close" aria-label="关闭试衣镜" data-i18n-aria-label="关闭试衣镜" title="关闭试衣镜" data-i18n-title="关闭试衣镜">×</button></div></header></div>`;
   document.documentElement.append(room);
   let roomPosition = window.__blingRoomPosition || { x: innerWidth - 344, y: 80 };
   function placeRoom() {
@@ -56,7 +59,7 @@ export function installHoverPicker({ minimized = false, panelUrl } = {}) {
     room.style.display = expanded ? "block" : "none";
     if (expanded && !frame) {
       frame = document.createElement("iframe");
-      frame.title = "试衣镜bling";
+      frame.title = t("试衣镜bling");
       frame.allow = "camera *; autoplay *";
       frame.src = panelUrl;
       roomShadow.querySelector(".window").append(frame);
@@ -65,6 +68,28 @@ export function installHoverPicker({ minimized = false, panelUrl } = {}) {
     if (expanded) placeRoom();
   }
   window.__blingExpand = expand;
+  function renderLanguage() {
+    button.textContent = t(hoverKey);
+    button.setAttribute("aria-label", t("试试这件"));
+    dockOpen.textContent = "⠿　" + t(dockSelected ? "已选好，展开试衣镜" : "试衣镜bling");
+    roomShadow.querySelector("[data-i18n]").textContent = t("试衣镜bling");
+    const languageButton = roomShadow.querySelector(".language");
+    languageButton.textContent = language === "zh" ? "EN" : "中";
+    languageButton.style.fontSize = "11px";
+    for (const root of [dockShadow, roomShadow]) {
+      for (const attribute of ["title", "aria-label"]) {
+        for (const node of root.querySelectorAll(`[data-i18n-${attribute}]`)) {
+          node.setAttribute(attribute, t(node.getAttribute(`data-i18n-${attribute}`)));
+        }
+      }
+    }
+    const frame = roomShadow.querySelector("iframe");
+    if (frame) frame.title = t("试衣镜bling");
+  }
+  roomShadow.querySelector(".language").addEventListener("click", () => {
+    void chrome.storage.local.set({ blingLanguage: language === "zh" ? "en" : "zh" });
+  });
+  renderLanguage();
   expand(!minimized);
   const header = roomShadow.querySelector("header");
   let roomDrag = null;
@@ -146,7 +171,7 @@ export function installHoverPicker({ minimized = false, panelUrl } = {}) {
         return valid(item) && event.clientX >= box.left && event.clientX <= box.right && event.clientY >= box.top && event.clientY <= box.bottom;
       });
     }
-    if (valid(image)) { if (current !== image) button.textContent = "试试这件"; current = image; place(); }
+    if (valid(image)) { if (current !== image) { hoverKey = "试试这件"; button.textContent = t(hoverKey); } current = image; place(); }
     else hideTimer = setTimeout(hide, 160);
   }
   host.addEventListener("pointerenter", () => clearTimeout(hideTimer));
@@ -163,13 +188,15 @@ export function installHoverPicker({ minimized = false, panelUrl } = {}) {
     pending = button.disabled = true;
     try {
       const response = await chrome.runtime.sendMessage({ target: "background", type: "garment-picked", item: { url: url.href, label, price, pageTitle: document.title.slice(0, 120), site: location.hostname } });
-      button.textContent = response?.ok ? "已选好 ✨" : "请重新打开试衣镜";
-      if (response?.ok) dockOpen.textContent = "⠿　已选好，展开试衣镜";
+      hoverKey = response?.ok ? "已选好 ✨" : "请重新打开试衣镜";
+      button.textContent = t(hoverKey);
+      if (response?.ok) { dockSelected = true; renderLanguage(); }
     } catch { remove(); }
     finally { pending = button.disabled = false; }
   });
   function onMessage(message, sender) {
     if (sender.id !== chrome.runtime.id || sender.tab) return;
+    if (message.type === "locale-changed") { language = message.language; renderLanguage(); }
     if (message.type === "remove-hover-picker") remove();
     if (message.type === "panel-visibility") expand(message.expanded);
     if (message.type === "panel-size") {

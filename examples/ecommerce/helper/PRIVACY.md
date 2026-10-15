@@ -1,10 +1,13 @@
-# 数据与隐私
+**English** | [简体中文](PRIVACY.zh-CN.md)
 
-- 永久 API Key：由用户在本机配置页填写，仅持久化到用户本机配置目录。验证和申请令牌时发送至 `https://api.decart.ai`；不发送给项目作者。插件不保存永久 Key。
-- 短期令牌：插件点击试穿后按需取得，限制模型、有效期和会话时长；不做跨会话持久化。
-- 相机画面：仅在用户同意后开启。试穿前为本机预览；主动点击10/20秒后，中心正方形画面经WebRTC发送给Decart处理。音频始终关闭。
-- 服装图片：仅在用户点选时暂存来源URL，点击试穿后下载、压缩并发送给Decart。网页图片主机可获知图片读取请求。
-- 最后一帧：仅保留在当前浮窗的本地画布内，不自动保存文件或上传给作者。
-- 本地助手：仅监听127.0.0.1，管理接口检查本机Origin及进程随机CSRF令牌。没有用户账号服务、广告、作者分析或遥测；SDK遥测关闭。
-- 第三方：使用Decart服务时仍适用其隐私政策、数据处理条款与账户设置。本工具不承诺Decart提供默认零留存。
-- 删除：助手设置页可删除本机保存的Key。源代码调试时如另有.env.local备份或系统环境变量，需用户自行清理；平台密钥撤销请在Decart控制台操作。
+# Data and privacy
+
+- **Permanent API key:** entered on your local setup page and persisted only in your local configuration directory. Sent to `https://api.decart.ai` to verify/request tokens, never to the author. The extension does not store it.
+- **Temporary tokens:** obtained when needed, restricted by model, expiry and session duration. Not persisted across sessions.
+- **Camera:** enabled with your permission, for local preview first. After you click 10/20 sec, a center-square video feed is sent to Decart over WebRTC. Audio is always off.
+- **Clothing:** the selected image URL is held temporarily. Starting a try-on downloads, compresses and sends the image to Decart. The image host can observe the download request.
+- **Last frame:** kept only in the current mirror's local canvas; not automatically saved to disk or sent to the author.
+- **Local helper:** listens on 127.0.0.1. Management endpoints check local Origin and a per-process random CSRF token. No author account service, ads, analytics or telemetry; SDK telemetry is disabled.
+- **Language:** the extension stores only a language preference in Chrome local storage, and the helper in browser localStorage. Keys are never stored there. Neither preference is synced to the author's service.
+- **Third parties:** Decart's privacy policy, processing terms and account settings apply. This project does not promise zero retention by Decart.
+- **Deletion:** delete the locally saved key from setup. Any separate development `.env.local` backups or system environment values must be removed yourself. Revoke the platform key in Decart's console.

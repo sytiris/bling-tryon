@@ -1,25 +1,26 @@
-# 试衣镜bling：给本机智能体的安装指引
+# Bling Try-On: local-agent installation guide
 
-用户要求“下载安装/启动/使用”本项目时，请按以下流程完成。先阅读 README.md；只读准备和用户授权的本机安装可以直接进行。注册、验证码、条款确认、充值、密钥填写和浏览器权限交给用户本人。
+For requests to download, install, start or use this project, read README.md first and follow the steps below. Authorized local installation and read-only preparation may proceed. The human handles account registration, verification codes, terms, payments, key entry and browser permission decisions. Chinese user documentation: README.zh-CN.md.
 
-## 1. 准备匹配本机的安装包
+## 1. Select and verify the package
 
-- 官方仓库：https://github.com/sytiris/bling-tryon 。从该仓库的最新 Release 获取完整包和 SHA256SUMS.txt，核对 SHA-256 后解压到当前工作区或用户指定的固定目录。
-- 匹配操作系统和芯片：macOS/ARM64、Windows/X64、Linux/X64。没有匹配包时说明原因，可在有 Node 24.14.1 或更高 24.x 的对应机器从源码构建；不要运行其他架构的 Node。
-- 已在完整解压包中时直接复用该包。不要只下载 chrome-tryon；它需要本地助手。源码目录可在 examples/ecommerce 执行 npm ci 和 npm run build:release，构建不需要 API Key。
-- 不改变系统安全策略，不自动绕过系统拦截或 Chrome 权限确认。
+- Official repository: https://github.com/sytiris/bling-tryon . Download the latest Release's full package and SHA256SUMS.txt, verify SHA-256, then extract to the workspace or a stable user-selected directory.
+- Match OS/architecture: macOS/ARM64, Windows/X64 or Linux/X64. If unavailable, explain and build from source on the target machine with Node 24.14.1 or a later 24.x. Never run a mismatched Node binary.
+- Reuse an already extracted full package. Do not download just chrome-tryon: it requires the helper. From source, run npm ci and npm run build:release in examples/ecommerce. Building needs no API key.
+- Do not change system security policy or bypass OS blocks or Chrome permission prompts automatically.
 
-## 2. 启动并打开注册/配置页面
+## 2. Start and open registration/setup
 
-- 运行对应启动器：macOS 的「启动试衣镜bling.command」、Windows 的「启动试衣镜bling.cmd」、Linux 的 start-linux.sh。保持助手进程运行；复用已有助手，不删除或覆盖用户配置。
-- 正常桌面启动会打开 http://127.0.0.1:3000/setup；未配置 Key 时还会打开 https://platform.decart.ai/api-keys 。若通过无界面终端启动或未弹出窗口，使用可用的本机浏览器工具打开这些地址；没有这类工具时把可点击地址给用户。
-- 让用户自行完成 Decart 注册/登录，查看控制台试用积分，再创建 API Key。官方当前说明新账号有免费试用额度，金额、有效期和适用条件以用户控制台为准；不要承诺固定赠送金额或代替用户充值。
-- 让用户把 Key 直接粘贴到本机配置页并点击「验证并保存」。不要索取或读取密钥，不把 Key 放进聊天、工具参数、终端命令、前端、日志、截图或版本管理；也不要读取已有 user.env 或 .env 文件来“帮忙填写”。
-- 只读检查 GET http://127.0.0.1:3000/api/health 的 configured 状态即可确认是否已配置。等待用户完成填写；不要调用试穿接口验证余额。
+- Run start-macos.command, start-windows.cmd or start-linux.sh. Chinese macOS/Windows launcher names are also retained. Keep the helper running; reuse existing services/configuration without deleting or overwriting user settings.
+- Normal desktop launch opens http://127.0.0.1:3000/setup and, when unconfigured, https://platform.decart.ai/api-keys . If a headless terminal does not open them, use an available local browser tool. Otherwise provide clickable URLs.
+- Let the human sign up/log in to Decart, check trial credits and create an API key. The official FAQ currently states new accounts get free credits; the console determines amounts, expiry and eligibility. Do not promise a fixed amount or top up for them.
+- The human pastes the key directly into local setup and clicks Verify & save. Do not ask for or read keys, put them in chat/tool arguments/commands/frontend/logs/screenshots/version control, or read existing user.env or .env files to fill the field for the user.
+- Read only GET http://127.0.0.1:3000/api/health to check configured status. Wait for the human to enter the key. Do not start a try-on to check balance.
+- UI follows browser language, with Chinese/English switch buttons. Do not change OS language. Configuration paths remain stable regardless of UI language.
 
-## 3. 完成 Chrome 扩展安装与交付
+## 3. Install Chrome extension and hand over
 
-- 提供解压包内 chrome-tryon 文件夹的绝对路径，打开 chrome://extensions，引导用户开启开发者模式并确认「加载未打包的扩展程序」。
-- 引导用户打开 HTTPS 购物页、点击插件图标、悬浮选衣，再由用户允许摄像头并主动点击 10 秒或 20 秒。
-- 交付本机设置地址、扩展目录和启动方式。健康检查通过只能说明助手/配置可用，不能声称已验证用户实际试穿效果。
-- 不自动开相机、不自动开始生成、不自动重试付费会话。永久 Key 只在用户本地助手中，扩展只使用短期 Client Token。
+- Provide the absolute path of the extracted chrome-tryon folder, open chrome://extensions, and guide the human through Developer mode and Load unpacked.
+- Guide them to an HTTPS shopping page, click the extension icon, hover and select clothing. The human grants camera access and actively clicks 10 sec or 20 sec.
+- Provide the local setup URL, extension path and launcher. A successful health/configuration check does not verify real try-on quality.
+- Do not auto-enable the camera, start generation or retry paid sessions. Permanent keys stay in the local helper; the extension uses short-lived client tokens only.

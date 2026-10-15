@@ -1,3 +1,5 @@
+> For the bilingual Chrome tool and local helper, see the [English project README](../../README.md) or [简体中文](../../README.zh-CN.md). This file documents the retained legacy Next.js demo.
+
 # E-commerce Virtual Try-On
 
 > Add a "Try it on" button to any product page - opens a modal with the user's camera and real-time AI try-on.

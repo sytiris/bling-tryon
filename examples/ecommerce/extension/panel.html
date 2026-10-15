@@ -1,33 +1,33 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>试衣镜bling</title>
+  <title data-i18n="试衣镜bling">试衣镜bling</title>
   <link rel="stylesheet" href="panel.css">
 </head>
 <body>
   <main>
     <section class="stage">
-      <video id="camera" autoplay muted playsinline aria-label="摄像头预览"></video>
-      <video id="output" autoplay muted playsinline aria-label="AI 试穿画面"></video>
-      <canvas id="snapshot" aria-label="最后一帧试穿效果"></canvas>
-      <div id="placeholder"><span class="hanger">⌁</span><p>把自己放在画面中央</p></div>
+      <video id="camera" autoplay muted playsinline aria-label="摄像头预览" data-i18n-aria-label="摄像头预览"></video>
+      <video id="output" autoplay muted playsinline aria-label="AI 试穿画面" data-i18n-aria-label="AI 试穿画面"></video>
+      <canvas id="snapshot" aria-label="最后一帧试穿效果" data-i18n-aria-label="最后一帧试穿效果"></canvas>
+      <div id="placeholder"><span class="hanger">⌁</span><p data-i18n="把自己放在画面中央">把自己放在画面中央</p></div>
       <section id="consent">
-        <h1>开启摄像头？</h1>
-        <p>点击试穿后才向 AI 发送画面</p>
-        <button id="enable-camera" disabled>同意，开启</button>
+        <h1 data-i18n="开启摄像头？">开启摄像头？</h1>
+        <p data-i18n="点击试穿后才向 AI 发送画面">点击试穿后才向 AI 发送画面</p>
+        <button id="enable-camera" disabled data-i18n="同意，开启">同意，开启</button>
       </section>
-      <div id="loading" hidden><span class="spinner"></span><span id="loading-text">准备试穿</span></div>
+      <div id="loading" hidden><span class="spinner"></span><span id="loading-text" data-i18n="准备试穿">准备试穿</span></div>
       <span id="countdown" hidden></span>
-      <span id="preview-tag" hidden>本机预览</span>
+      <span id="preview-tag" hidden data-i18n="本机预览">本机预览</span>
     </section>
-    <div class="status-row"><span id="status" role="status">正在准备</span><span id="latency"></span></div>
+    <div class="status-row"><span id="status" role="status" data-i18n="正在准备">正在准备</span><span id="latency"></span></div>
     <p id="error" role="alert" hidden></p>
     <section id="controls" hidden>
-      <button id="quick" data-seconds="10">10 秒</button>
-      <button id="fine" data-seconds="20">20 秒</button>
-      <button id="close-camera">关闭摄像头</button>
+      <button id="quick" data-seconds="10" data-i18n="10 秒">10 秒</button>
+      <button id="fine" data-seconds="20" data-i18n="20 秒">20 秒</button>
+      <button id="close-camera" data-i18n="关闭摄像头">关闭摄像头</button>
     </section>
   </main>
   <script type="module" src="panel.js"></script>

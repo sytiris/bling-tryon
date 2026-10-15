@@ -1,3 +1,4 @@
+import { normalizeLanguage, translate } from "./public/i18n.js";
 import { createServer } from "node:http";
 import { randomBytes, timingSafeEqual, randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
@@ -16,7 +17,7 @@ const secureHeaders = {
   "Access-Control-Allow-Origin": EXTENSION_ORIGIN,
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, X-Tryon-Extension",
-  "Vary": "Origin",
+  "Vary": "Origin, Accept-Language",
 };
 const fail = (status, message) => Object.assign(new Error(message), { status, safe: true });
 const equal = (a, b) => typeof a === "string" && Buffer.byteLength(a) === Buffer.byteLength(b) && timingSafeEqual(Buffer.from(a), Buffer.from(b));
@@ -36,7 +37,13 @@ export async function createHelperServer({ dataDir = defaultDataDir(), inherited
   let credentialRevision = 0;
   let changingKey = false;
   const server = createServer(async (request, response) => {
+    const language = normalizeLanguage(request.headers["accept-language"]);
     const reply = (status, data, type = "application/json; charset=utf-8") => {
+      if (type.startsWith("application/json") && data && typeof data === "object") {
+        for (const field of ["error", "message"]) {
+          if (typeof data[field] === "string") data = { ...data, [field + "Key"]: data[field], [field]: translate(language, data[field]) };
+        }
+      }
       response.writeHead(status, { ...secureHeaders, "Content-Type": type });
       response.end(type.startsWith("application/json") ? JSON.stringify(data) : data);
     };
@@ -50,12 +57,12 @@ export async function createHelperServer({ dataDir = defaultDataDir(), inherited
         return reply(204, "", "text/plain");
       }
       if (request.method === "GET" && path === "/api/health") {
-        return reply(200, { service: "bling-helper", version: "1.0.1", configured: Boolean(store.get()),
+        return reply(200, { service: "bling-helper", version: "1.1.0", configured: Boolean(store.get()),
           credentialVersion: instance + ":" + credentialRevision, model: "lucy-vton-latest", tokenTtlSeconds: 60,
           maxSessionSeconds: { quick: 45, extended: 55 } });
       }
       const assets = { "/": ["index.html", "text/html"], "/setup": ["index.html", "text/html"],
-        "/app.js": ["app.js", "text/javascript"], "/style.css": ["style.css", "text/css"] };
+        "/app.js": ["app.js", "text/javascript"], "/i18n.js": ["i18n.js", "text/javascript"], "/style.css": ["style.css", "text/css"] };
       if (request.method === "GET" && assets[path]) {
         const [file, type] = assets[path];
         const content = (await readFile(resolve(publicDir, file), "utf8")).replaceAll("__CSRF_TOKEN__", csrf);

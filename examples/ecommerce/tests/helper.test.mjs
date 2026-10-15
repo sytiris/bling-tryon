@@ -20,11 +20,30 @@ async function fixture(t) {
   t.after(async () => { server.closeAllConnections(); await new Promise(r => server.close(r)); await rm(dataDir, { recursive: true, force: true }); });
   const html = await fetch(base + "/setup").then(r => r.text());
   const csrf = html.match(/name="csrf-token" content="([^"]+)"/)[1];
-  const admin = (path, body) => fetch(base + path, { method: "POST", headers: {
-    "Content-Type": "application/json", Origin: base, "X-Bling-CSRF": csrf,
+  const admin = (path, body, language = "en") => fetch(base + path, { method: "POST", headers: {
+    "Content-Type": "application/json", Origin: base, "X-Bling-CSRF": csrf, "Accept-Language": language,
   }, body: JSON.stringify(body) });
   return { base, admin, calls, dataDir };
 }
+
+test("helper localizes safe API messages without changing verification or exposing credentials", async t => {
+  const { base, admin, calls } = await fixture(t);
+  for (const [language, expected] of [["en", "The key is invalid or revoked."], ["zh-CN", "密钥无效或已撤销"]]) {
+    const response = await admin("/api/settings", { apiKey: "invalid-test-key" }, language);
+    const body = await response.json();
+    assert.equal(response.status, 401);
+    assert.ok(body.error.startsWith(expected));
+    assert.equal(body.errorKey, "密钥无效或已撤销，请检查后重新输入。");
+    assert.ok(!JSON.stringify(body).includes("invalid-test-key"));
+    assert.ok(!JSON.stringify(body).includes("secret diagnostic"));
+  }
+  assert.equal(calls.length, 2);
+  const health = await fetch(base + "/api/health").then(r => r.json());
+  assert.equal(health.configured, false);
+  const module = await fetch(base + "/i18n.js");
+  assert.equal(module.status, 200);
+  assert.match(module.headers.get("content-type"), /text\/javascript/);
+});
 
 test("setup rejects foreign origins, missing CSRF and DNS rebinding hosts", async t => {
   const { base, admin, calls } = await fixture(t);

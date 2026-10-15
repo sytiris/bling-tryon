@@ -1,0 +1,11 @@
+{
+  "extensionName": {
+    "message": "试衣镜bling"
+  },
+  "extensionDescription": {
+    "message": "可拖动的网页试衣浮窗，悬浮选衣，10秒或20秒实时试穿。"
+  },
+  "actionTitle": {
+    "message": "打开试衣镜bling"
+  }
+}
