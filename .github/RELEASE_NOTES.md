@@ -1,30 +1,29 @@
 ## English
 
-Bling Try-On now supports **English and Chinese** throughout the distributed Chrome extension and local helper. The UI follows your browser language, with a saved manual switch. The README defaults to English and links to a Chinese edition; installation, Decart sign-up/credits/API-key instructions and privacy documentation are included in both languages.
+This patch adds a **native Intel Mac (x64) package** alongside Apple Silicon, Windows and Linux. Both Mac packages require **macOS 13.5 or newer** for the bundled Node 24 runtime.
 
-- Language switching updates text without restarting the camera or a live try-on.
-- The hover picker, floating mirror, minimized tab, status/error messages and settings are translated.
-- ASCII launchers: `start-macos.command`, `start-windows.cmd`, `start-linux.sh`. Original Chinese launcher names remain available.
-- Your own Decart key stays in the local helper; the extension uses temporary tokens. The fixed extension ID and existing local key location are unchanged.
-- Both 10/20-second choices remain standard mode. The timer starts at the first frame; billable generation may last longer. Cropping does not lower the per-second rate. There are no automatic paid retries.
+| Computer | Download |
+| --- | --- |
+| Intel Mac / x86_64 | `bling-tryon-macOS-X64.tar.gz` |
+| Apple Silicon / arm64 | `bling-tryon-macOS-ARM64.tar.gz` |
+| Windows x64 | `bling-tryon-Windows-X64.tar.gz` |
+| Linux x64 | `bling-tryon-Linux-X64.tar.gz` |
 
-Download the matching `bling-tryon-*.tar.gz` full package and verify `SHA256SUMS.txt`. Extract everything, run its launcher and keep the terminal open. First use opens Decart API Keys and `http://127.0.0.1:3000/setup`; register/log in and enter your key yourself. Load `chrome-tryon` via `chrome://extensions` → Developer mode → Load unpacked. On an HTTPS shopping page, click the extension icon, hover an image → Try this, allow the camera, then click 10 sec / 20 sec.
+All four packages must pass native build/tests and runtime architecture checks before publication. `SHA256SUMS.txt` covers each archive. Download and extract the full matching package, then run `start-macos.command`, `start-windows.cmd` or `start-linux.sh`. Keep the helper running; load its `chrome-tryon` folder through Chrome Developer mode → Load unpacked.
 
-For upgrades, stop the old helper, run the new launcher, load the new `chrome-tryon` directory (or update your existing unpacked directory), then refresh the shopping page. Do not copy your key into the extension. Chrome's extension-list name follows Chrome's language; the in-tool switch changes the tool UI.
+Installation agents should query the actual latest Release. If no matching package exists, authorized local installation may build from source with a compatible runtime; no additional project-policy confirmation is required just for that fallback. Never install a mismatched architecture or bypass OS security.
 
-macOS Apple Silicon has been tested locally. Windows/X64 and Linux/X64 pass automated build/tests; real camera and site compatibility on those devices still needs testing. No signed/notarized installer or Web Store listing yet. The original Next.js/upstream reference demos retain their existing languages.
+English/Chinese UI, BYOK, temporary client tokens, 10/20-second standard-mode sessions and automatic disconnect rules are unchanged. No key is included in any package. macOS Apple Silicon has been tested locally; Intel Mac camera/site compatibility still needs real-device testing. No signed/notarized installer yet.
 
 ## 简体中文
 
-本版本为插件和本地助手增加**中英文双语**，默认跟随浏览器，支持手动切换并记住选择。GitHub 首页默认英文，链接到中文 README；安装、Decart 注册/积分/API Key 与隐私说明都提供两种语言。
+本次补上 **Intel Mac（x64）原生安装包**，保留 Apple Silicon、Windows 和 Linux 包。两种 Mac 包均要求 **macOS 13.5 或以上**，这是内置 Node 24 的最低要求。
 
-- 悬浮选衣、浮窗、小标签、设置、连接状态和错误提示均支持双语；切换文字不会重开相机或实时会话。
-- 新增英文文件名启动器，保留中文名称启动器。扩展 ID 和本机密钥路径保持不变。
-- 仍使用用户自己的 Decart Key，本地助手保管永久密钥，插件仅拿短期令牌。
-- 10/20 秒仍均为标准模式，出画后开始计时，到点断开 AI，保留本地相机。出画前生成可能计费，裁剪不降低每秒费用，无自动付费重试。
+- Intel / `x86_64`：`bling-tryon-macOS-X64.tar.gz`。
+- Apple Silicon / `arm64`：`bling-tryon-macOS-ARM64.tar.gz`。
+- 四个包全部通过各自平台构建、测试与原生运行时架构检查后才发布，并提供 SHA256SUMS.txt。
+- 安装智能体应读取实际最新 Release；没有匹配包时，已授权的本机安装允许用兼容运行时从源码构建，不因这一点重复索取许可。不能安装错误架构或绕过系统安全设置。
 
-下载匹配系统/芯片的完整包并核对 SHA256SUMS.txt，完整解压后运行启动器，保持终端开启。首次启动打开 Decart API Keys 和本机设置页，由用户自行注册、查看额度并填写密钥；随后到 chrome://extensions 开启开发者模式，加载 chrome-tryon。
+完整解压后运行对应启动器，保持助手开启；Chrome 开发者模式加载包内 chrome-tryon。升级前退出旧助手，再启动新版本并刷新购物页。
 
-升级时先退出旧助手，运行新启动器，加载新版 chrome-tryon 目录（或更新原加载目录）并刷新购物页。不要将密钥复制进扩展。Chrome 扩展列表名称跟随 Chrome 本身语言，工具内按钮控制界面语言。
-
-本机验证平台为 macOS Apple Silicon。Windows/Linux 提供自动构建包，真实摄像头和购物站兼容性仍需对应设备验证。尚未提供系统签名/公证安装器或商店安装；上游参考示例保留原有语言。
+中英文界面、自备 Decart Key、短期令牌、10/20 秒标准模式和自动断连规则保持不变。安装包不含密钥。本机验证平台是 Apple Silicon；Intel Mac 的真实相机和购物网站效果仍需对应设备验证，暂无系统签名/公证安装器。

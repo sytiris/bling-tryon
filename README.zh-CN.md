@@ -8,7 +8,7 @@
 
 永久密钥保存在用户自己电脑的本地助手中；插件只接收短期令牌。没有作者托管的密钥服务，试衣镜不另设账号或订阅，也不接入其他付费AI接口。试穿费用由用户自己的 Decart 账户承担。
 
-> 当前为可试用版本，提供 macOS/ARM64、Windows/X64、Linux/X64 自动构建包；本机实测平台为 macOS Apple Silicon。Windows/Linux 的摄像头与购物网站兼容性仍需对应设备验证，其他架构可从源码构建。系统签名/公证安装器尚未提供。
+> 当前为可试用版本，提供 macOS/ARM64（Apple Silicon）、macOS/X64（Intel）、Windows/X64、Linux/X64 自动构建包；本机实测平台为 macOS Apple Silicon。Intel Mac、Windows/Linux 的摄像头与购物网站兼容性仍需对应设备验证，其他架构可从源码构建。系统签名/公证安装器尚未提供。
 
 ## 语言
 
@@ -17,6 +17,15 @@
 ## 安装
 
 优先使用本仓库 **[Releases](https://github.com/sytiris/bling-tryon/releases)** 中与你系统和芯片匹配的完整安装包，内含本地助手、Node运行时及Chrome扩展。
+
+Mac 安装包按芯片选择，两种都要求 **macOS 13.5 或以上**（对应内置 [Node 24 运行时要求](https://github.com/nodejs/node/blob/v24.14.1/BUILDING.md#platform-list)）：
+
+| 电脑 | Release 文件 |
+| --- | --- |
+| M 系列芯片 / `arm64` | `bling-tryon-macOS-ARM64.tar.gz` |
+| Intel 芯片 / `x86_64` | `bling-tryon-macOS-X64.tar.gz` |
+
+Intel Mac 不要安装 ARM64 包。安装时读取 GitHub 实际最新 Release，不要只按旧版本缓存判断；没有匹配包时，已授权的本机安装可以使用下方源码构建流程，并先确认运行时兼容。项目规则不要求仅因改用源码而重复征求同意。
 
 1. 解压整个安装包到固定位置，运行 start-macos.command（macOS）、start-windows.cmd（Windows）或 start-linux.sh（Linux），也可使用保留的中文名称启动器，保持终端开启。
 2. 启动器会打开 `http://127.0.0.1:3000/setup`；尚未配置 Key 时，还会自动打开 [Decart API Keys 页面](https://platform.decart.ai/api-keys)。先按下方说明注册/登录、创建 Key，再回到本机页面点击「验证并保存」。验证只申请短期令牌，不启动摄像头或生成视频。

@@ -12,7 +12,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
+        include:
+          - os: macos-latest
+            arch: arm64
+          - os: macos-15-intel
+            arch: x64
+          - os: windows-latest
+            arch: x64
+          - os: ubuntu-latest
+            arch: x64
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -22,12 +30,37 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: '24.14.1'
+          architecture: ${{ matrix.arch }}
           cache: npm
           cache-dependency-path: examples/ecommerce/package-lock.json
       - run: npm ci
       - run: npm test
       - run: npm run typecheck
       - run: npm run build:release
+      - name: Verify packaged native runtime
+        shell: bash
+        env:
+          EXPECTED_ARCH: ${{ matrix.arch }}
+        run: |
+          package_dir="../../dist/$(node -p "'bling-tryon-'+process.platform+'-'+process.arch")"
+          runtime="$package_dir/runtime/node"
+          if [[ "$RUNNER_OS" == "Windows" ]]; then runtime="$runtime.exe"; fi
+          "$runtime" --input-type=module - "$package_dir" <<'NODE'
+          import assert from 'node:assert/strict';
+          import { readFileSync, existsSync } from 'node:fs';
+          import { join } from 'node:path';
+          const directory = process.argv[2];
+          const info = JSON.parse(readFileSync(join(directory, 'BUILD.json'), 'utf8'));
+          assert.equal(process.arch, process.env.EXPECTED_ARCH);
+          assert.equal(process.arch.toUpperCase(), process.env.RUNNER_ARCH);
+          assert.equal(info.arch, process.arch);
+          assert.equal(info.platform, process.platform);
+          assert.equal(info.nodeVersion, process.version);
+          for (const file of ['helper/server.mjs', 'helper/public/i18n.js', 'chrome-tryon/manifest.json', 'README.md', 'README.zh-CN.md']) {
+            assert.ok(existsSync(join(directory, file)), file);
+          }
+          console.log('Native package verified:', info.platform, info.arch, info.version);
+          NODE
       - name: Archive with executable permissions
         shell: bash
         run: tar -czf ../../dist/bling-tryon-${{ runner.os }}-${{ runner.arch }}.tar.gz -C ../../dist "$(node -p "'bling-tryon-'+process.platform+'-'+process.arch")"
@@ -54,8 +87,10 @@ jobs:
           set -euo pipefail
           gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --dir artifacts
           mapfile -d '' archives < <(find artifacts -type f -name '*.tar.gz' -print0)
-          test "${#archives[@]}" -eq 3
+          expected=(bling-tryon-macOS-ARM64.tar.gz bling-tryon-macOS-X64.tar.gz bling-tryon-Windows-X64.tar.gz bling-tryon-Linux-X64.tar.gz)
+          test "${#archives[@]}" -eq "${#expected[@]}"
           for archive in "${archives[@]}"; do cp "$archive" .; done
+          for archive in "${expected[@]}"; do test -s "$archive"; done
           sha256sum bling-tryon-*.tar.gz > SHA256SUMS.txt
           gh release create "$GITHUB_REF_NAME" bling-tryon-*.tar.gz SHA256SUMS.txt \
             --repo "$GITHUB_REPOSITORY" --verify-tag --draft \

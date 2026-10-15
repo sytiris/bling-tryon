@@ -2,9 +2,11 @@
 
 # 试衣镜bling
 
-用你自己的 Decart API Key，在购物网页上实时试衣。当前为可试用版本：本机已验证 macOS Apple Silicon；Windows/X64、Linux/X64 提供自动构建包，摄像头与购物网站兼容性仍需对应设备验证。
+用你自己的 Decart API Key，在购物网页上实时试衣。当前为可试用版本：本机已验证 macOS Apple Silicon；Intel Mac/X64、Windows/X64、Linux/X64 提供自动构建包，摄像头与购物网站兼容性仍需对应设备验证。
 
 界面默认跟随浏览器语言，点击语言按钮可切换并记住选择；插件与助手各自保存语言偏好。Chrome 扩展列表名称跟随 Chrome 本身的语言。
+
+Mac 安装包要求 macOS 13.5 或以上。Intel / `x86_64` 下载 `bling-tryon-macOS-X64.tar.gz`；Apple Silicon / `arm64` 下载 `bling-tryon-macOS-ARM64.tar.gz`。请检查实际最新 Release，Intel 电脑不要使用 ARM64 运行时。
 
 ## 第一次使用
 

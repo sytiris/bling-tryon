@@ -8,11 +8,20 @@ Pick clothing on a shopping website and preview it with live AI. A draggable Chr
 
 Your permanent key stays on your computer. The extension receives short-lived client tokens only. There is no author-hosted key service, extra account or subscription, or other paid AI provider. Decart bills usage to your own account.
 
-> Preview release. Packages are built for macOS/ARM64, Windows/X64 and Linux/X64. Hands-on testing has been on macOS Apple Silicon; real camera and shopping-site compatibility on Windows/Linux still needs device testing. Other architectures require a source build. Signed/notarized installers are not available yet.
+> Preview release. Packages are built for macOS/ARM64 (Apple Silicon), macOS/X64 (Intel), Windows/X64 and Linux/X64. Hands-on testing has been on macOS Apple Silicon; real camera and shopping-site compatibility on Intel Mac, Windows and Linux still needs device testing. Other architectures require a source build. Signed/notarized installers are not available yet.
 
 ## Install
 
 Download the full package matching your OS and architecture from [Releases](https://github.com/sytiris/bling-tryon/releases). Verify it against `SHA256SUMS.txt` and extract the **entire** package to a permanent folder. It includes the local helper, Node runtime and Chrome extension.
+
+Choose the Mac package by processor (both require **macOS 13.5 or newer**, matching the bundled [Node 24 runtime requirements](https://github.com/nodejs/node/blob/v24.14.1/BUILDING.md#platform-list)):
+
+| Computer | Release asset |
+| --- | --- |
+| Mac with an M-series chip / `arm64` | `bling-tryon-macOS-ARM64.tar.gz` |
+| Intel Mac / `x86_64` | `bling-tryon-macOS-X64.tar.gz` |
+
+Do not install the ARM64 package on Intel. Always check the actual latest Release; if no matching package is available, an authorized local installation may use the source-build instructions below with a compatible runtime. This project does not require an extra confirmation just because a source build is needed.
 
 1. Run `start-macos.command` (macOS), `start-windows.cmd` (Windows) or `start-linux.sh` (Linux). Keep the helper terminal open. The original Chinese launcher names are also available.
 2. The launcher opens `http://127.0.0.1:3000/setup`. If no key is configured, it also opens [Decart API Keys](https://platform.decart.ai/api-keys). Sign up/log in, create your key, and enter it on **your local setup page**. Click **Verify & save**. Verification requests a temporary token; it does not enable your camera or generate video.

@@ -2,7 +2,9 @@
 
 # Bling Try-On · 试衣镜bling
 
-Live virtual try-on on shopping websites with your own Decart API key. Preview release: tested locally on macOS Apple Silicon. Windows/X64 and Linux/X64 packages are built automatically; real camera/site compatibility still needs testing on those devices.
+Live virtual try-on on shopping websites with your own Decart API key. Preview release: tested locally on macOS Apple Silicon. Intel Mac/X64, Windows/X64 and Linux/X64 packages are built automatically; real camera/site compatibility still needs testing on those devices.
+
+Mac packages require macOS 13.5 or newer. Intel / `x86_64`: download `bling-tryon-macOS-X64.tar.gz`. Apple Silicon / `arm64`: use `bling-tryon-macOS-ARM64.tar.gz`. Check the actual latest Release; do not use an ARM64 runtime on Intel.
 
 ## First use
 

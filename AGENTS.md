@@ -5,7 +5,8 @@ For requests to download, install, start or use this project, read README.md fir
 ## 1. Select and verify the package
 
 - Official repository: https://github.com/sytiris/bling-tryon . Download the latest Release's full package and SHA256SUMS.txt, verify SHA-256, then extract to the workspace or a stable user-selected directory.
-- Match OS/architecture: macOS/ARM64, Windows/X64 or Linux/X64. If unavailable, explain and build from source on the target machine with Node 24.14.1 or a later 24.x. Never run a mismatched Node binary.
+- Check the actual latest Release instead of relying on a remembered version. Match OS/architecture: macOS/ARM64 (Apple Silicon), macOS/X64 (Intel), Windows/X64 or Linux/X64. Intel Mac / x86_64 uses bling-tryon-macOS-X64.tar.gz; never use the ARM64 package on Intel. Both Mac packages require macOS 13.5 or newer.
+- If a matching package is unavailable, authorized local installation includes building from source on the target machine using a compatible Node 24.14.1 or later 24.x. Explain the fallback and proceed; this guide does not require another confirmation merely for a source build. Check runtime/OS compatibility first. Do not install a mismatched binary or bypass OS security policies. If a newer runtime cannot run on an older OS, report that specific limitation instead of attempting the same unsupported build.
 - Reuse an already extracted full package. Do not download just chrome-tryon: it requires the helper. From source, run npm ci and npm run build:release in examples/ecommerce. Building needs no API key.
 - Do not change system security policy or bypass OS blocks or Chrome permission prompts automatically.
 
