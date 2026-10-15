@@ -5,13 +5,21 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const base = "http://127.0.0.1:3000";
-const openBrowser = () => {
+const openBrowser = async () => {
+  const health = await fetch(base + "/api/health", { signal: AbortSignal.timeout(500) }).then(r => r.ok ? r.json() : null).catch(() => null);
+  const urls = [base + "/setup"];
+  if (health?.service === "bling-helper" && health.configured === false) {
+    urls.push("https://platform.decart.ai/api-keys");
+    console.log("首次使用：请在 Decart 注册/登录、查看试用积分并创建 API Key，然后回到本机设置页填写。" + urls[1]);
+  }
   if (process.env.BLING_NO_OPEN === "1") return;
-  const [command, args] = process.platform === "darwin" ? ["open", [base + "/setup"]]
-    : process.platform === "win32" ? ["rundll32.exe", ["url.dll,FileProtocolHandler", base + "/setup"]]
-    : ["xdg-open", [base + "/setup"]];
-  const child = spawn(command, args, { detached: true, stdio: "ignore" });
-  child.on("error", () => {}); child.unref();
+  for (const url of urls) {
+    const [command, args] = process.platform === "darwin" ? ["open", [url]]
+      : process.platform === "win32" ? ["rundll32.exe", ["url.dll,FileProtocolHandler", url]]
+      : ["xdg-open", [url]];
+    const child = spawn(command, args, { detached: true, stdio: "ignore" });
+    child.on("error", () => {}); child.unref();
+  }
 };
 try {
   // Repeated double-clicks reuse this helper instead of opening another process.

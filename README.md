@@ -4,22 +4,42 @@
 
 ![本地助手配置页](docs/assets/local-helper.png)
 
-永久密钥保存在用户自己电脑的本地助手中；插件只接收短期令牌。没有作者托管的密钥服务，也没有账号注册、订阅或其他付费AI接口。试穿费用由用户自己的 Decart 账户承担。
+永久密钥保存在用户自己电脑的本地助手中；插件只接收短期令牌。没有作者托管的密钥服务，试衣镜不另设账号或订阅，也不接入其他付费AI接口。试穿费用由用户自己的 Decart 账户承担。
 
-> 当前为首个可试用版本，本机实测平台为 macOS Apple Silicon。Windows、Linux及其他架构可从源码构建；未经实机验证的平台不承诺完整兼容。系统签名/公证安装器尚未提供。
+> 当前为可试用版本，提供 macOS/ARM64、Windows/X64、Linux/X64 自动构建包；本机实测平台为 macOS Apple Silicon。Windows/Linux 的摄像头与购物网站兼容性仍需对应设备验证，其他架构可从源码构建。系统签名/公证安装器尚未提供。
 
 ## 安装
 
 优先使用本仓库 **[Releases](https://github.com/sytiris/bling-tryon/releases)** 中与你系统和芯片匹配的完整安装包，内含本地助手、Node运行时及Chrome扩展。
 
 1. 解压整个安装包到固定位置，运行「启动试衣镜bling」启动器，保持终端开启。
-2. 浏览器打开 `http://127.0.0.1:3000/setup`，填写你自己的 Decart API Key，点击「验证并保存」。验证只申请短期令牌，不启动摄像头或生成视频。
+2. 启动器会打开 `http://127.0.0.1:3000/setup`；尚未配置 Key 时，还会自动打开 [Decart API Keys 页面](https://platform.decart.ai/api-keys)。先按下方说明注册/登录、创建 Key，再回到本机页面点击「验证并保存」。验证只申请短期令牌，不启动摄像头或生成视频。
 3. Chrome 打开 `chrome://extensions`，开启「开发者模式」，点击「加载未打包的扩展程序」，选择包内 `chrome-tryon` 文件夹。
 4. 打开 HTTPS 购物页，点击插件图标。移到衣服图片上点「试试这件」，允许摄像头后主动点 **10 秒 / 20 秒**。
 
 浮窗标题栏可拖动；「−」收起成可拖动小标签；「⚙」打开助手设置。插件不会因网页获得焦点而自动关闭。
 
 详细说明：[安装、费用与已知限制](examples/ecommerce/helper/README.md) · [隐私与数据流](examples/ecommerce/helper/PRIVACY.md)
+
+## 注册 Decart、获取试用积分和设置 API Key
+
+1. 打开 [Decart API 控制台](https://platform.decart.ai/)，自行完成注册/登录和页面要求的验证。
+2. 在控制台查看账户余额或试用额度。[官方价格说明](https://docs.platform.decart.ai/getting-started/pricing#faq)目前写明新账户有免费试用额度；具体金额、有效期和使用条件以你的控制台为准。本项目不发放积分，也不会自动充值。Decart API 按使用量计费，无需购买订阅会员。
+3. 进入 [API Keys](https://platform.decart.ai/api-keys)，使用页面的创建按钮生成一个 Key，并复制。可参考 [官方 API Key 指南](https://docs.platform.decart.ai/getting-started/authentication)。
+4. 回到本机助手 `http://127.0.0.1:3000/setup`，将 Key 粘贴到密码输入框，点击「验证并保存」。看到验证通过后，再加载 Chrome 扩展。
+5. 打开购物网页，自己允许摄像头并点击 10 秒或 20 秒开始试穿。Key 验证通过不代表余额一定充足；额度不足时回 Decart 控制台查看或自行决定是否充值。
+
+Key 只填写到你自己电脑的助手页面，不要发给智能体、聊天、Issue 或截图。以后可在助手页测试、更换或删除；撤销已泄露的 Key 需要到 Decart 控制台操作。
+
+## 让你的智能体帮你安装
+
+把这一句话交给能操作你电脑的智能体：
+
+> 请帮我在这台电脑下载安装并启动 https://github.com/sytiris/bling-tryon，先阅读仓库 AGENTS.md，打开 Decart 注册/API Key 页面和本机配置页，让我自己完成注册及密钥填写，再引导我加载 Chrome 扩展。
+
+智能体安装步骤见 [AGENTS.md](AGENTS.md)：选择匹配系统/芯片的最新完整发布包、校验并解压、运行启动器、给出扩展目录。未配置 Key 时，启动器会自动打开 Decart API Keys 页面，用户可从该页面的登录/注册入口继续；已配置时只打开本机设置页，不重复打开 Decart。
+
+自动下载安装和弹出网页需要智能体具备本机文件、终端与浏览器操作能力。无法打开桌面浏览器时，应给出上述两个地址供用户手动打开。用户自行完成注册、验证码、条款确认、密钥粘贴以及扩展/摄像头权限确认；智能体不代替用户充值或自动开始付费试穿。
 
 ## 试穿与停止
 

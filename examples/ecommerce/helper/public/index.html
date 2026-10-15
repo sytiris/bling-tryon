@@ -13,12 +13,13 @@
     <section class="intro"><span class="eyebrow">用你自己的 DECART 账户</span><h1>连接好，就去挑件喜欢的。</h1><p>密钥留在这台电脑。试穿费用由你的 Decart 账户承担。</p></section>
     <section class="card">
       <div class="section-title"><h2>Decart API Key</h2><span id="key-status">检查中</span></div>
+      <p id="getting-started" class="hint">第一次使用？先<a href="https://platform.decart.ai/" target="_blank" rel="noopener noreferrer">注册 / 登录 Decart</a>，在控制台查看试用积分，再创建 API Key。新账户试用额度和有效期以平台显示为准；本工具不会自动充值。</p>
       <form id="key-form" autocomplete="off">
         <label for="api-key">粘贴你的密钥</label>
         <div class="key-input"><input id="api-key" name="api-key" type="password" autocomplete="off" spellcheck="false" maxlength="512" placeholder="从 Decart 控制台复制" required><button id="save" type="submit">验证并保存</button></div>
       </form>
       <p class="hint">验证时仅向 Decart 申请短期令牌，不开启摄像头，不开始生成。</p>
-      <div class="key-actions"><button id="test-current" type="button" disabled>测试当前密钥</button><button id="delete-key" type="button" disabled>删除本机密钥</button><a href="https://platform.decart.ai/api-keys" target="_blank" rel="noopener noreferrer">获取 Decart Key ↗</a></div>
+      <div class="key-actions"><button id="test-current" type="button" disabled>测试当前密钥</button><button id="delete-key" type="button" disabled>删除本机密钥</button><a href="https://platform.decart.ai/api-keys" target="_blank" rel="noopener noreferrer">创建 / 查看 API Key ↗</a></div>
       <p id="message" role="status" hidden></p>
     </section>
     <section class="install">

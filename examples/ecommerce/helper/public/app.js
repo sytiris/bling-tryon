@@ -22,6 +22,7 @@ async function refresh() {
   extensionPath = state.extensionPath;
   $("key-status").textContent = configured ? "已配置 · 仅存本机" : "尚未配置";
   $("key-status").classList.toggle("ready", configured);
+  $("getting-started").hidden = configured;
   buttons(false);
 }
 async function operate(path, body = {}) {

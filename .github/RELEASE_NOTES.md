@@ -1,11 +1,13 @@
-首个公开可试用版本：Chrome 网页浮窗＋本地助手，每位用户配置自己的 Decart API Key。
+Chrome 网页浮窗＋本地助手，每位用户配置自己的 Decart API Key。
+
+本次更新加入 Decart 注册、试用积分与 API Key 分步说明，以及给本机智能体的 AGENTS.md 安装指引。尚未配置 Key 时启动器会自动打开 Decart API Keys 和本机配置页；已配置时只打开本机设置页。
 
 ## 下载与安装
 
 下载下方与你的系统和芯片匹配的 `bling-tryon-*.tar.gz` 完整包并解压；每个包都包含本地助手、Node 运行时和 `chrome-tryon` 扩展目录。`SHA256SUMS.txt` 提供完整性校验。
 
 1. 运行包内对应系统的「启动试衣镜bling」启动器；Linux 使用 `start-linux.sh`。保持服务运行。
-2. 打开 `http://127.0.0.1:3000/setup`，填写自己的 Decart API Key，验证并保存。
+2. 首次启动会打开 Decart API Keys 页面和 `http://127.0.0.1:3000/setup`；自行注册/登录 Decart，查看账户试用额度、创建 API Key，再回本机页验证并保存。官方当前说明新账号有免费试用额度，具体金额与有效期以控制台为准。
 3. Chrome 打开 `chrome://extensions`，开启开发者模式，点击「加载未打包的扩展程序」，选择包内 `chrome-tryon`。
 4. 打开 HTTPS 购物网页，点击插件图标，将鼠标移到衣服图片上点击「试试这件」，允许摄像头后主动选择 10 秒或 20 秒。
 
