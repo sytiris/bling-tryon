@@ -8,6 +8,10 @@ Use your own Decart API key to try on clothing live on Chrome shopping pages. Ne
 
 Build on this project to create your own clothing-selection, styling or shopping features.
 
+![Actual plugin use: clothing page and virtual try-on result](docs/assets/tryon-real-example.png)
+
+Actual use reference: clothing on the shopping page (left) and the extension’s try-on result (right). The try-on user’s face is covered.
+
 ![Local helper setup](docs/assets/local-helper-en.png)
 
 Your permanent key stays on your computer. The extension receives short-lived client tokens only. There is no author-hosted key service, extra account or subscription, and no automatic cross-provider fallback. Your selected provider bills your own account.
