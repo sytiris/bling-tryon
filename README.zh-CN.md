@@ -2,11 +2,13 @@
 
 # 试衣镜bling
 
-**试衣镜bling 是一款开源虚拟试穿工具，支持直接接入你自己的 API，让你自己管理模型账户和 API 费用。**
+**试衣镜bling是可以直接接自己API的开源虚拟视频试穿工具，让用户可以从源头掌握模型账户和API费用。**
 
-使用自己的 Decart API Key，就能在 Chrome 购物网页里实时试衣。新用户可使用 Decart 赠送的免费 API 试用积分，**无需先充值，就能在额度内体验试穿**。积分用完后，是否充值由你决定。赠送额度和充值价格以[官方说明](https://docs.platform.decart.ai/getting-started/pricing#faq)及账户控制台为准。
+1）使用自己的Decart API Key，在Chrome购物网页里实时试衣。
 
-你可以在本项目基础上，继续开发个性化的选衣、穿搭或购物功能。
+2）Decart目前向新注册账户提供免费API试用积分1000点，无需充值**即可享受试穿体验**；模型用尽后，费用是否充值用户自行决定，后续API使用按平台规则。额外的充值费用参考Decart[官方说明](https://docs.platform.decart.ai/getting-started/pricing#faq)。
+
+3）用户可以本项目上，围绕虚拟试穿继续开发个性化的选衣、穿搭或购物功能。
 
 ![本地助手配置页](docs/assets/local-helper.png)
 
