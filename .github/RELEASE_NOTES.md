@@ -1,6 +1,8 @@
 ## English
 
-### New in v1.3.0
+### New in v1.3.1 (includes the v1.3.0 Vidu integration)
+
+- Correct Windows dependency notice collection and verify bundled attribution/version metadata on every build.
 
 - Optional **Vidu S2-Editing (experimental)** alongside the default Decart Lucy VTON. Select China or Global in local setup and use your own matching Vidu API key and API credits.
 - Keys stay separately in the local helper. Vidu validation only queries credits; Decart validation only requests a short-lived token. Neither starts generation. A valid zero-balance Vidu key can be saved.
@@ -27,7 +29,9 @@ Preview release: real camera/site compatibility on Intel Mac, Windows and Linux 
 
 ## 简体中文
 
-### v1.3.0 新增
+### v1.3.1 更新（包含 v1.3.0 的 Vidu 接入）
+
+- 修复 Windows 安装包的依赖许可声明收集，并在四个平台构建时验证声明和版本一致。
 
 - 在默认 Decart 之外增加 **Vidu S2-Editing（实验性）**，本地助手可选中国站/全球站，使用用户自己的对应地区 API Key 和 API 积分。
 - 两家密钥分别保存在本机。Vidu 验证仅查额度，有效零余额 Key 也能保存；Decart 验证只申请短期令牌，均不开始生成。

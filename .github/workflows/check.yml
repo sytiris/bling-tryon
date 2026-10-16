@@ -51,6 +51,12 @@ jobs:
           import { join } from 'node:path';
           const directory = process.argv[2];
           const info = JSON.parse(readFileSync(join(directory, 'BUILD.json'), 'utf8'));
+          const manifest = JSON.parse(readFileSync(join(directory, 'chrome-tryon/manifest.json'), 'utf8'));
+          assert.equal(manifest.version, info.version);
+          if (process.env.GITHUB_REF_TYPE === 'tag') assert.equal(info.version, process.env.GITHUB_REF_NAME.replace(/^v/, ''));
+          const notices = readFileSync(join(directory, 'chrome-tryon/THIRD_PARTY_NOTICES.txt'), 'utf8');
+          assert.ok(notices.includes('aliyun-rtc-sdk 7.1.9'), 'RTC vendor notice missing');
+          assert.ok(notices.includes('aliyun-rts-sdk'), 'Bundled dependency licenses missing');
           assert.equal(process.arch, process.env.EXPECTED_ARCH);
           assert.equal(process.arch.toUpperCase(), process.env.RUNNER_ARCH);
           assert.equal(info.arch, process.arch);

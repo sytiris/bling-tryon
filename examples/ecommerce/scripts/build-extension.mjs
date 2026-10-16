@@ -29,7 +29,7 @@ console.log("Built local extension:", dest, "ID:", id);
 
 // Preserve attribution for runtime packages included in the local browser bundle.
 const packages = new Set(Object.keys({ ...bundled.metafile.inputs, ...viduBundle.metafile.inputs }).map((file) => {
-  const absolute = resolve(file);
+  const absolute = resolve(file).replaceAll("\\", "/");
   const match = absolute.match(/^(.*\/node_modules\/(?:@[^/]+\/)?[^/]+)\//);
   return match?.[1];
 }).filter(Boolean));

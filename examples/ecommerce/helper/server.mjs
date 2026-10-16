@@ -67,7 +67,7 @@ export async function createHelperServer({ dataDir = defaultDataDir(), inherited
         return reply(204, "", "text/plain");
       }
       if (request.method === "GET" && path === "/api/health") {
-        return reply(200, { service: "bling-helper", version: "1.3.0", ...configuration(),
+        return reply(200, { service: "bling-helper", version: "1.3.1", ...configuration(),
           credentialVersion: instance + ":" + credentialRevision, model: preferences.get().provider === "vidu" ? "vidu-s2-editing" : "lucy-vton-latest", tokenTtlSeconds: 60,
           maxSessionSeconds: { quick: 45, extended: 55 } });
       }

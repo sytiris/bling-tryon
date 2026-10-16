@@ -41,7 +41,7 @@ await writeFile(resolve(dest, "start-macos.command"), mac, { mode: 0o755 });
 await writeFile(resolve(dest, "start-linux.sh"), mac.replace("#!/bin/bash", "#!/usr/bin/env bash"), { mode: 0o755 });
 await writeFile(resolve(dest, "启动试衣镜bling.cmd"), `@echo off\r\ncd /d "%~dp0"\r\nset "NODE_USE_ENV_PROXY=1"\r\nset "NO_PROXY=localhost,127.0.0.1"\r\nif defined TRYON_PROXY_URL set "HTTPS_PROXY=%TRYON_PROXY_URL%"\r\nif defined TRYON_PROXY_URL set "HTTP_PROXY=%TRYON_PROXY_URL%"\r\n"runtime\\node.exe" "helper\\server.mjs"\r\nif errorlevel 1 pause\r\n`);
 await cp(resolve(dest, "启动试衣镜bling.cmd"), resolve(dest, "start-windows.cmd"));
-await writeFile(resolve(dest, "BUILD.json"), JSON.stringify({ name: "试衣镜bling", version: "1.3.0", platform: process.platform,
+await writeFile(resolve(dest, "BUILD.json"), JSON.stringify({ name: "试衣镜bling", version: "1.3.1", platform: process.platform,
   arch: process.arch, nodeVersion: process.version, builtAt: new Date().toISOString(),
   runtimeSha256: createHash("sha256").update(await readFile(process.execPath)).digest("hex") }, null, 2) + "\n");
 console.log("Built self-contained release:", dest);
