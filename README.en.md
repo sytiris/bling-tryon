@@ -2,9 +2,11 @@
 
 # Bling Try-On · 试衣镜bling
 
-**Bling Try-On is an open-source virtual try-on tool that connects directly to your own model API account, putting model usage and API costs in your hands.** Use your own Decart API key to try clothing live on Chrome shopping pages. Decart currently gives new accounts free API trial credits: **try it within the granted credits and eligibility rules, without paying this project a try-on fee or subscription**. When credits run out, you decide whether to add funds; further API use is billed under the provider's rules. Credit amounts, expiry and eligibility follow your console and the [official FAQ](https://docs.platform.decart.ai/getting-started/pricing#faq).
+**Bling Try-On is an open-source virtual try-on tool that connects to your own API, so you manage your model account and API costs.**
 
-Build your own clothing-selection, styling or shopping features on top of this open-source Chrome mirror and local helper. **Keep your own keys, check usage directly with the model provider, and choose your provider and top-up budget.** The existing 10/20-second trials and automatic disconnect help bound API usage. Decart is the default; an experimental Vidu S2-Editing integration is also available.
+Use your own Decart API key to try on clothing live on Chrome shopping pages. New users can use Decart’s free API trial credits to **try it within the available allowance without adding funds first**. Once the credits run out, you decide whether to top up. Credit grants and top-up prices follow the [official information](https://docs.platform.decart.ai/getting-started/pricing#faq) and your account console.
+
+Build on this project to create your own clothing-selection, styling or shopping features.
 
 ![Local helper setup](docs/assets/local-helper-en.png)
 
