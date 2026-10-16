@@ -1,16 +1,18 @@
 ## English
 
-### New in v1.2.0
+### New in v1.3.0
 
-- Enlarge the fitting mirror to fullscreen, then restore its size and position or press Escape. If fullscreen is unavailable, the mirror enlarges within the page. Resizing preserves the current camera and try-on session.
-- On normal 10/20-second completion, disconnect AI first and automatically play the locally recorded result once. Replay does not start another AI session.
-- Hover or focus the video for a progress bar and translucent play/pause, stop, download and close controls. Hover over an icon for its text label. Stop pauses and rewinds; close discards the replay. Downloads use MP4 when supported, otherwise WebM.
-- A dashed head-and-shoulders guide, positioning tips and elapsed wait time appear while connecting, then disappear when the first frame arrives or the session stops. New controls and tips support English and Chinese.
-- Recordings contain only the center-square AI output, without audio, and remain in browser memory until cleared or explicitly downloaded. New trials, camera off, minimizing/closing and hiding/refreshing the page clear the recording. Errors discard incomplete recordings. Encoder failures do not block AI disconnection.
+- Optional **Vidu S2-Editing (experimental)** alongside the default Decart Lucy VTON. Select China or Global in local setup and use your own matching Vidu API key and API credits.
+- Keys stay separately in the local helper. Vidu validation only queries credits; Decart validation only requests a short-lived token. Neither starts generation. A valid zero-balance Vidu key can be saved.
+- Vidu supports the existing silent centered camera, first-frame 10/20-second timer, fullscreen mirror, local replay, pause/stop/close and MP4/WebM download. The extension gets scoped RTC credentials, never permanent keys or upstream control secrets.
+- Explicit hangup, client heartbeat expiry, first-frame and total time limits, cancellation and late-response cleanup. No automatic paid retries or cross-provider fallback. Changing provider/region stops the current trial.
+- Updated English/Chinese setup, account/key instructions, privacy information and agent installation guide.
 
-Your own Decart key remains in the local helper; the extension uses short-lived client tokens. The 10/20-second viewing timer starts at the first decoded frame; generation before it may also be billed. No automatic paid retries. Existing first-frame timeouts and maximum session durations remain in place.
+**Vidu is experimental: real paid generation, output quality, cold-start latency and upstream billing termination have not been verified with a funded account.** Verification covered 52 local automated tests, type checking, real AliRTC SDK loading/custom-track support under Chrome MV3, and simulated Vidu/Decart browser sessions with 10-second MP4 / 20-second WebM, fullscreen and camera cleanup. No paid generation was used.
 
-### Installation and upgrade
+The 10/20-second timer starts at the first decoded frame; generation during the wait may also be billed. Local protections cannot guarantee instant remote billing termination during a helper crash or network outage. Check provider usage records and API-credit eligibility; Vidu website bonuses may not cover API usage.
+
+### Install or upgrade
 
 | Computer | Download |
 | --- | --- |
@@ -19,28 +21,26 @@ Your own Decart key remains in the local helper; the extension uses short-lived 
 | Windows x64 | `bling-tryon-Windows-X64.tar.gz` |
 | Linux x64 | `bling-tryon-Linux-X64.tar.gz` |
 
-Both Mac packages require macOS 13.5 or newer. All four native builds/tests and runtime architecture checks must pass before publication; `SHA256SUMS.txt` covers the archives. Extract the complete package and run `start-macos.command`, `start-windows.cmd` or `start-linux.sh`. Keep the helper open and load `chrome-tryon` through Chrome Developer mode → Load unpacked.
+Both Mac packages require macOS 13.5 or newer. Verify the full archive with `SHA256SUMS.txt`. Quit the old helper, extract the complete package to a stable folder and run its launcher. Keep the helper terminal open. In `chrome://extensions`, reload or load the new `chrome-tryon` folder and refresh shopping pages. **Upgrade both helper and extension**: an old running helper may hide the provider selection. Existing keys remain in the user's configuration directory; never copy or publish `user.env` / `vidu.env`.
 
-For upgrades, quit the old helper, replace the package in its stable installation folder, launch the new helper, reload the extension in `chrome://extensions`, and refresh shopping pages. Existing keys remain in the user's configuration directory; do not copy or publish `user.env`.
-
-Local browser checks used synthetic media and a simulated AI connection, including 10-second MP4 / 20-second WebM recording, replay, downloads, fullscreen, hover labels and waiting-guide cleanup. No paid generation was run for automated validation. Real camera/site behavior on Intel Mac, Windows and Linux still needs device testing. This is a preview release without signed/notarized installers or Chrome Web Store publication.
+Preview release: real camera/site compatibility on Intel Mac, Windows and Linux still needs device testing. No signed/notarized installer or Chrome Web Store distribution.
 
 ## 简体中文
 
-### v1.2.0 新功能
+### v1.3.0 新增
 
-- 试衣镜支持全屏放大、还原和 Esc 退出；不支持全屏时在网页内放大。调整尺寸保留相机和当前试穿连接。
-- 正常 10/20 秒结束后先断开 AI，再自动回放本次录制的视频一次；回放不会重新启动 AI。
-- 鼠标移入或键盘聚焦时显示进度条和半透明播放/暂停、停止、下载、关闭按钮，悬停图标可查看文字说明。停止会暂停并回到开头；关闭会丢弃回放。支持时下载 MP4，否则 WebM。
-- 等待出画时显示头肩虚线轮廓、站位提示和等待秒数，收到首帧或停止后自动隐藏。新增功能均支持中英文。
-- 视频只录制中心正方形 AI 输出，不含音频，保存在浏览器内存。主动下载才保存文件；开始新试穿、关闭相机、收起/关闭或隐藏/刷新页面会清除。异常断连丢弃未完成录制，录制失败也不会阻碍 AI 断连。
+- 在默认 Decart 之外增加 **Vidu S2-Editing（实验性）**，本地助手可选中国站/全球站，使用用户自己的对应地区 API Key 和 API 积分。
+- 两家密钥分别保存在本机。Vidu 验证仅查额度，有效零余额 Key 也能保存；Decart 验证只申请短期令牌，均不开始生成。
+- Vidu 沿用无声中心裁剪、首帧后 10/20 秒计时、浮窗放大和本地回放、暂停/停止/关闭、MP4/WebM 下载。插件只拿临时 RTC 凭证，不接收永久 Key 或上游控制密钥。
+- 主动挂断、客户端失联心跳保护、首帧/总时限、取消后延迟响应清理；不自动重试或换用另一家付费平台。切换平台/地区会停止当前试穿。
+- 更新中英文设置、注册/密钥说明、隐私信息和智能体安装指南。
 
-继续采用用户自备 Decart Key 的本地助手模式，插件只拿短期令牌。10/20 秒从首帧出现后开始计算，出画前生成时间也可能计费；不自动重试付费连接，保留首帧超时和总时长保护。
+**Vidu 尚未用已充值账户验证真实生成、画质、冷启动延迟和上游停止计费表现。** 已验证 52 项本地测试、类型检查、真实 AliRTC SDK 在 Chrome MV3 下加载/接收裁剪轨道，以及 Vidu/Decart 模拟会话中的 10 秒 MP4 / 20 秒 WebM、全屏、回放下载和相机清理。验证未运行付费生成。
+
+10/20 秒从首帧开始计时，不代表账单时长；等待期间生成也可能收费。助手崩溃或断网时，本地保护无法保证上游瞬时停止计费，请核对用量记录。Vidu 网页赠额不一定适用于 API。
 
 ### 安装与升级
 
-保留 Apple Silicon Mac、Intel Mac、Windows x64、Linux x64 四种原生安装包和 SHA256SUMS.txt。两种 Mac 包要求 macOS 13.5 或以上。完整解压后运行对应启动器，保持助手开启；Chrome 开发者模式加载包内 `chrome-tryon`。
+提供 Apple Silicon Mac、Intel Mac、Windows x64、Linux x64 完整包与 SHA256SUMS.txt，两种 Mac 包均要求 macOS 13.5 或以上。校验后，退出旧助手，完整解压并启动新版；Chrome 在 `chrome://extensions` 重载或加载新版 `chrome-tryon`，并刷新购物页。**助手和插件需一起升级**；旧助手仍在运行时可能看不到平台选择。原密钥保留在用户配置目录，不要复制或上传 `user.env` / `vidu.env`。
 
-升级时退出旧助手，将新版完整文件替换到固定安装目录，启动新版助手，在 `chrome://extensions` 重新加载扩展并刷新购物页。原有密钥留在用户配置目录，不要复制或上传 `user.env`。
-
-本机以合成视频和模拟 AI 验证了 10 秒 MP4 / 20 秒 WebM、回放下载、全屏、悬停提示及等待轮廓清理，自动验证未运行付费生成。Intel Mac、Windows 和 Linux 的真实相机及购物网站效果仍需对应设备测试。本次发布到 GitHub，仍为预览版，暂无签名/公证安装器或 Chrome 应用商店发布。
+仍为预览版，Intel Mac、Windows/Linux 的真实相机和购物网站效果需对应设备测试；暂无系统签名/公证安装器或 Chrome 应用商店发布。

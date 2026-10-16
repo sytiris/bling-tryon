@@ -16,9 +16,11 @@ document.getElementById("language").addEventListener("click", () => {
 const $ = id => document.getElementById(id);
 const csrf = document.querySelector('meta[name="csrf-token"]').content;
 let configured = false;
+let provider = "decart";
 let extensionPath = "";
 function show(key, failed = false, values) { text($("message"), key, values); $("message").hidden = false; $("message").classList.toggle("error", failed); }
 function buttons(busy) {
+  $("provider").disabled = $("vidu-region").disabled = busy;
   $("save").disabled = busy;
   $("api-key").disabled = busy;
   $("test-current").disabled = busy || !configured;
@@ -34,10 +36,20 @@ async function request(path, body = {}) {
 async function refresh() {
   const state = await request("/api/status");
   configured = state.configured;
+  provider = state.provider || "decart";
+  $("provider").value = provider; $("vidu-region").value = state.viduRegion || "cn";
+  $("region-field").hidden = $("vidu-note").hidden = provider !== "vidu";
+  $("key-title").textContent = provider === "vidu" ? "Vidu API Key" : "Decart API Key";
+  const placeholder = provider === "vidu" ? "从所选地区的 Vidu 控制台复制" : "从 Decart 控制台复制";
+  $("api-key").setAttribute("data-i18n-placeholder", placeholder);
+  $("api-key").placeholder = language === "zh" ? placeholder : english[placeholder];
+  text($("verification-note"), provider === "vidu" ? "验证仅查询 Vidu 账户额度，不开启摄像头，不开始生成。" : "验证时仅向 Decart 申请短期令牌，不开启摄像头，不开始生成。");
+  $("create-key-link").href = provider === "decart" ? "https://platform.decart.ai/api-keys" : "https://platform.vidu." + (state.viduRegion === "global" ? "com" : "cn") + "/";
+  $("vidu-getting-started").hidden = provider !== "vidu" || configured;
   extensionPath = state.extensionPath;
   text($("key-status"), configured ? "已配置 · 仅存本机" : "尚未配置");
   $("key-status").classList.toggle("ready", configured);
-  $("getting-started").hidden = configured;
+  $("getting-started").hidden = configured || provider !== "decart";
   buttons(false);
 }
 async function operate(path, body = {}) {
@@ -51,6 +63,7 @@ $("key-form").addEventListener("submit", event => {
   if (!key) return;
   void operate("/api/settings", { apiKey: key });
 });
+for (const id of ["provider", "vidu-region"]) $(id).addEventListener("change", () => void operate("/api/provider", { provider: $("provider").value, viduRegion: $("vidu-region").value }));
 $("test-current").addEventListener("click", () => void operate("/api/settings/test"));
 $("delete-key").addEventListener("click", () => void operate("/api/settings/delete"));
 async function copy(text) {

@@ -2,7 +2,7 @@
 
 # 试衣镜bling
 
-用你自己的 Decart API Key，在购物网页上实时试衣。当前为可试用版本：本机已验证 macOS Apple Silicon；Intel Mac/X64、Windows/X64、Linux/X64 提供自动构建包，摄像头与购物网站兼容性仍需对应设备验证。
+用你自己的 Decart 或可选 Vidu API Key，在购物网页上实时试衣。当前为可试用版本：本机已验证 macOS Apple Silicon；Intel Mac/X64、Windows/X64、Linux/X64 提供自动构建包，摄像头与购物网站兼容性仍需对应设备验证。
 
 界面默认跟随浏览器语言，点击语言按钮可切换并记住选择；插件与助手各自保存语言偏好。Chrome 扩展列表名称跟随 Chrome 本身的语言。
 
@@ -24,21 +24,34 @@ Mac 安装包要求 macOS 13.5 或以上。Intel / `x86_64` 下载 `bling-tryon-
 
 先在 [Decart API 控制台](https://platform.decart.ai/)自行注册/登录并完成验证，然后在账户中查看试用额度。[官方说明](https://docs.platform.decart.ai/getting-started/pricing#faq)目前写明新账户有免费试用额度，具体金额、有效期和使用条件以控制台为准；本项目不提供积分，也不自动充值。Decart API 按量计费，无需购买订阅会员。
 
+## 可选接入 Vidu S2-Editing（实验性）
+
+**v1.3.0 新增 Vidu S2-Editing**，使用用户自己的 API 账户，默认仍为 Decart。请下载 v1.3.0 或以上完整包，同时升级助手和扩展；旧包没有 Vidu 选项。目前已通过模拟 HTTP/WebSocket 和浏览器生命周期测试；**由于没有已充值的测试账户，尚未验证真实 Vidu 生成效果**。
+
+1. 打开本机助手 `http://127.0.0.1:3000/setup`，选择「Vidu S2-Editing（实验性）」，再选择与密钥所属账户一致的「中国站」（`api.vidu.cn`）或「全球站」（`api.vidu.com`）。
+2. 在对应的[中国站控制台](https://platform.vidu.cn/)或[全球站控制台](https://platform.vidu.com/)创建 API Key，粘贴到本机助手密码框，点击「验证并保存」。不要在 Decart 模式下填写 Vidu Key。
+3. 验证仅查询[账户额度 `GET /ent/v2/credits`](https://platform.vidu.cn/docs/api-reference/task-management/account-balance)，有效的零余额账户也能保存。此操作不创建生成会话，也不保证额度足够试穿。
+4. 回到试衣镜选衣，主动点击「10 秒 / 20 秒」。Vidu 使用 `virtual_tryon` 换装模式，沿用中心裁剪、放大和本地回放/下载。切换平台或地区会停止当前试穿；出错后不自动重试，也不自动换用另一家付费平台。
+
+初次体验仍优先推荐官方提供新账户试用额度的 Decart。截至 2026-10-16，尚未从 Vidu 公开文档确认注册即赠且适用于 S2-Editing API 的默认免费额度；已有 Vidu API 积分的用户可自行使用，其他用户请在对应地区控制台核对余额、[API 价格](https://platform.vidu.cn/docs/overview/pricing)、活动和购买方式，按需自行充值。网页端赠额不一定适用于 API。
+
+Vidu 永久密钥单独存入本机 `vidu.env`，平台/地区偏好保存在 `providers.json`。插件仅接收短期 RTC 凭证和本地会话控制凭证；永久密钥及上游控制密钥留在助手。停止时助手主动发送挂断，并设置 5 秒客户端心跳保护、30 秒首帧限制和 45/55 秒总时限。界面从首帧开始计时，等待期间的生成也可能计费；冷启动较慢时可能触发保护超时。这些是本地保护，助手崩溃或网络中断时无法承诺上游立即停止计费，请核对平台用量记录。Vidu 通过阿里云 RTC 传输视频，其条款及必要服务诊断也适用。
+
 在 [API Keys 页面](https://platform.decart.ai/api-keys)创建并复制 Key，回到本机助手粘贴到密码框，点击「验证并保存」。密钥只填在自己的本机页面，不要发给聊天或智能体。需要更换时在同一页面保存新 Key，删除本机配置不会撤销平台上的 Key。
 
 也可以让能操作本机的智能体按包内 AGENTS.md 完成下载、启动和打开网页；注册、条款确认、密钥填写、充值和浏览器权限仍由你自己完成。已配置 Key 后，再启动不会重复打开 Decart；刷新设置页也不会打开外站。浏览器没有自动弹出时，手动打开上述两个页面即可。
 
 ## 密钥与费用
 
-每位用户使用自己的 Decart 账户并承担其生成费用。永久 Key 保存在用户本机配置目录的 `user.env` 文件中，运行时交给本地服务；插件只拿短期令牌。不会同步到 Chrome 账户，也不会发给插件作者。Unix/macOS 的新配置目录权限为700、文件为600；配置文件并非加密保险库，能读取该用户文件的本机进程仍可能读取密钥。
+每位用户使用自己的所选模型账户并承担生成费用。永久 Key 保存在用户本机配置目录的 `user.env`（Decart）或 `vidu.env`（Vidu）文件中，运行时交给本地服务；插件只拿短期令牌。不会同步到 Chrome 账户，也不会发给插件作者。Unix/macOS 的新配置目录权限为700、文件为600；配置文件并非加密保险库，能读取该用户文件的本机进程仍可能读取密钥。
 
 - macOS：`~/Library/Application Support/试衣镜bling/user.env`
 - Windows：`%LOCALAPPDATA%/BlingTryOn/user.env`
 - Linux：`~/.config/bling-tryon/user.env`（支持 `XDG_CONFIG_HOME`）
 
-设置页可测试、更换或删除密钥。验证失败不覆盖旧值；删除后助手不会在下次启动时恢复旧的环境变量密钥。删除本机配置不会撤销 Decart 平台上的 Key；需要撤销时请到 Decart 控制台操作。
+设置页可测试、更换或删除密钥。验证失败不覆盖旧值；删除后助手不会在下次启动时恢复旧的环境变量密钥。删除本机配置不会撤销平台上的 Key；需要撤销时请到对应平台控制台操作。
 
-10 / 20 秒指**出画后的体验时长**。实时模型按实际生成时长收费，出画前生成的时间也可能计费。两档都用 `lucy-vton-latest` 标准模式，未开启费用翻倍的 fast 模式。正方形裁剪只改变取景，不降低每秒费用。请以 [Decart 官方价格](https://docs.platform.decart.ai/getting-started/pricing)为准。
+10 / 20 秒指**出画后的体验时长**。实时模型按实际生成时长收费，出画前生成的时间也可能计费。Decart 两档都用 `lucy-vton-latest` 标准模式，未开启费用翻倍的 fast 模式。正方形裁剪只改变取景，不降低每秒费用。请以 [Decart 官方价格](https://docs.platform.decart.ai/getting-started/pricing)为准。
 
 ## 放大与回放
 
@@ -63,6 +76,6 @@ Mac 安装包要求 macOS 13.5 或以上。Intel / `x86_64` 下载 `bling-tryon-
 
 ## 来源与支持
 
-基于 [DecartAI/tryon-examples](https://github.com/DecartAI/tryon-examples) 和 Decart JavaScript SDK 修改，保留 MIT 许可及第三方声明。本工具与 Decart 官方无隶属关系。
+基于 [DecartAI/tryon-examples](https://github.com/DecartAI/tryon-examples) 和 Decart JavaScript SDK 修改，保留 MIT 许可及第三方声明。本工具与 Decart / Vidu 官方无隶属关系。
 
 出现问题时可以提供操作步骤、系统/Chrome版本和已脱敏的错误提示。不要在Issue、截图、日志或聊天中粘贴API Key、短期Token或摄像头画面。

@@ -12,8 +12,9 @@ const openBrowser = async () => {
   const health = await fetch(base + "/api/health", { signal: AbortSignal.timeout(500) }).then(r => r.ok ? r.json() : null).catch(() => null);
   const urls = [base + "/setup"];
   if (health?.service === "bling-helper" && health.configured === false) {
-    urls.push("https://platform.decart.ai/api-keys");
-    console.log(t("首次使用：请在 Decart 注册/登录、查看试用积分并创建 API Key，然后回到本机设置页填写。") + urls[1]);
+    const isVidu = health.provider === "vidu";
+    urls.push(isVidu ? "https://platform.vidu." + (health.viduRegion === "global" ? "com" : "cn") + "/" : "https://platform.decart.ai/api-keys");
+    console.log(t(isVidu ? "请在对应地区的 Vidu 控制台创建 API Key，然后回到本机设置页填写。" : "首次使用：请在 Decart 注册/登录、查看试用积分并创建 API Key，然后回到本机设置页填写。") + urls[1]);
   }
   if (process.env.BLING_NO_OPEN === "1") return;
   for (const url of urls) {
@@ -42,7 +43,7 @@ try {
       console.log(t("密钥仅保存在本机。保持此窗口开启；Ctrl+C 停止助手。"));
       openBrowser();
     });
-    const stop = () => { server.close(); server.closeAllConnections(); process.exitCode = 0; };
+    const stop = () => { server.stopVidu?.(); server.close(); server.closeAllConnections(); process.exitCode = 0; };
     process.on("SIGINT", stop); process.on("SIGTERM", stop);
   }
 } catch { console.error(t("本地配置无法读取，请检查配置目录后重试。")); process.exitCode = 1; }

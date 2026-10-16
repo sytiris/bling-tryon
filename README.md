@@ -2,11 +2,11 @@
 
 # Bling Try-On · 试衣镜bling
 
-Pick clothing on a shopping website and preview it with live AI. A draggable Chrome fitting mirror and a local helper, using **your own Decart API key (BYOK)**.
+Pick clothing on a shopping website and preview it with live AI. A draggable Chrome fitting mirror and a local helper, using **your own Decart or optional Vidu API key (BYOK)**.
 
 ![Local helper setup](docs/assets/local-helper-en.png)
 
-Your permanent key stays on your computer. The extension receives short-lived client tokens only. There is no author-hosted key service, extra account or subscription, or other paid AI provider. Decart bills usage to your own account.
+Your permanent key stays on your computer. The extension receives short-lived client tokens only. There is no author-hosted key service, extra account or subscription, and no automatic cross-provider fallback. Your selected provider bills your own account.
 
 > Preview release. Packages are built for macOS/ARM64 (Apple Silicon), macOS/X64 (Intel), Windows/X64 and Linux/X64. Hands-on testing has been on macOS Apple Silicon; real camera and shopping-site compatibility on Intel Mac, Windows and Linux still needs device testing. Other architectures require a source build. Signed/notarized installers are not available yet.
 
@@ -44,7 +44,20 @@ The extension and helper follow your browser language: Chinese for Chinese brows
 4. Paste it into the password field at `http://127.0.0.1:3000/setup` and click **Verify & save**.
 5. Return to a shopping page, allow the camera yourself, and click 10 sec or 20 sec. Successful token verification does not guarantee enough balance for generation. If credits are insufficient, check Decart and decide yourself whether to add funds.
 
-Enter keys only on your own local helper page. Do not share them with an agent, in chat, issues or screenshots. You can test, replace or delete the local key in setup. Revoke a leaked key in the Decart console.
+## Optional Vidu S2-Editing (experimental)
+
+**v1.3.0 adds Vidu S2-Editing** using your own API account. Decart remains the default. Download the full v1.3.0-or-later package and upgrade both the helper and extension; older packages do not have the Vidu option. This integration has passed mocked HTTP/WebSocket and browser lifecycle tests, but **real paid Vidu generation has not been verified** because no funded test account is available.
+
+1. Open local setup at `http://127.0.0.1:3000/setup`, select **Vidu S2-Editing (experimental)**, then choose **China** (`api.vidu.cn`) or **Global** (`api.vidu.com`) to match the account that issued your key.
+2. Create an API key in the corresponding [China console](https://platform.vidu.cn/) or [Global console](https://platform.vidu.com/). Paste it into the local helper's password field and click **Verify & save**. Do not paste a Vidu key into Decart mode.
+3. Verification queries [`GET /ent/v2/credits`](https://platform.vidu.cn/docs/api-reference/task-management/account-balance) only. A valid zero-balance account can be configured; verification does not create a live session or prove there are enough credits to generate video.
+4. Return to the mirror, choose clothing and actively click **10 sec / 20 sec**. The app uses Vidu's `virtual_tryon` editing mode, with the existing centered camera, fullscreen and local replay/download controls. Switching provider/region stops the current trial; errors never automatically retry or fall back to another paid provider.
+
+Decart remains the recommendation for an initial trial because its official FAQ offers new-account credits. As of 2026-10-16, a default sign-up grant usable with the S2-Editing API has not been confirmed in Vidu's public documentation. Check your regional console's balance, [API pricing](https://platform.vidu.cn/docs/overview/pricing), promotions and purchase options yourself. Website bonus credits do not necessarily apply to API usage.
+
+Vidu's permanent key stays in a separate local `vidu.env`; provider/region preferences are in `providers.json`. The extension receives short-lived RTC credentials and an opaque local control capability. The helper keeps the permanent key and upstream control secret, and sends an explicit hangup when stopping. It enforces a 5-second client heartbeat lease, a 30-second first-frame limit and a 45/55-second absolute cap. The visible timer starts at the first decoded frame; Vidu may bill generation during the wait. Slow cold starts may hit the protective timeout. These are local safeguards, not a guarantee of immediate remote billing termination during a helper crash or network outage; check your provider's usage records. Vidu transports video through Aliyun RTC, whose terms and necessary service diagnostics also apply.
+
+Enter keys only on your own local helper page. Do not share them with an agent, in chat, issues or screenshots. You can test, replace or delete the local key in setup. Revoke a leaked key in its provider console.
 
 ## Ask your local agent to install it
 
@@ -58,7 +71,7 @@ The agent needs local file, terminal and browser capabilities. If it cannot open
 
 ## Sessions and stopping
 
-- Both durations use `lucy-vton-latest` **standard mode**. The 10/20-second timer starts at the **first decoded frame**. This is not a promise of billable duration; generation before the first frame may also be charged.
+- With Decart, both durations use `lucy-vton-latest` **standard mode**. The 10/20-second timer starts at the **first decoded frame**. This is not a promise of billable duration; generation before the first frame may also be charged.
 - Starting a try-on hides the original camera feed. While connecting, a dashed head-and-shoulders outline and positioning tips appear alongside the elapsed wait time. At the deadline, AI disconnects immediately. A locally recorded result plays once, with hover/focus controls for progress, pause/play, stop, close and download. The local camera stays available; another AI try-on requires a deliberate click.
 - Camera off, minimizing/closing the mirror, hiding/refreshing the shopping page, helper loss and key changes stop generation as soon as possible.
 - Errors do not trigger automatic retries. The first-frame timeout is 30 seconds; client and server caps of 45/55 seconds provide a fallback.
@@ -72,7 +85,7 @@ This image comes from a synthetic-camera technical test. It illustrates the inte
 
 Image selection uses image size and page structure; it cannot identify every garment. CSS backgrounds, cross-origin frames, closed components, protected or login-only images may be inaccessible. Some sites block camera use inside embedded windows. Chrome internal pages and the Web Store cannot host the mirror.
 
-The helper listens on 127.0.0.1 only. Keys are saved in the user's local configuration directory and never included in the extension, source, logs or release packages, or routed through the author's servers. This file is not an encrypted vault: local programs with sufficient file permissions can read it. Decart processes the data needed for generation under its own terms, privacy policy and account settings.
+The helper listens on 127.0.0.1 only. Keys are saved in the user's local configuration directory and never included in the extension, source, logs or release packages, or routed through the author's servers. This file is not an encrypted vault: local programs with sufficient file permissions can read it. The selected provider and, for Vidu, Aliyun RTC process the data needed for generation and transport under their own terms, privacy policies and account settings.
 
 ## Build from source
 
@@ -88,7 +101,7 @@ npm run build:release
 
 The full package is created at repository root `dist/bling-tryon-<platform>-<arch>/`. Run its launcher. Building does not require an API key; do not add your permanent key to CI.
 
-For helper-only debugging: `npm run helper`. `BLING_DATA_DIR` overrides the local configuration directory. A server environment variable `DECART_API_KEY` can supply the initial key; a value saved in setup takes precedence. Deleting it prevents the old environment value from returning at the next start. `BLING_LANGUAGE=en` or `zh` overrides terminal language; web UI language follows the browser.
+For helper-only debugging: `npm run helper`. `BLING_DATA_DIR` overrides the local configuration directory. A server environment variable `DECART_API_KEY` or `VIDU_API_KEY` can supply each initial key; a value saved in setup takes precedence. Deleting it prevents the old environment value from returning at the next start. `BLING_LANGUAGE=en` or `zh` overrides terminal language; web UI language follows the browser.
 
 If you need an HTTP proxy, set your own `TRYON_PROXY_URL`, or inherit `HTTP_PROXY`/`HTTPS_PROXY`. Release launchers enable Node environment-proxy support and bypass local addresses; they do not change system proxy settings.
 
@@ -103,6 +116,6 @@ The original Next.js ecommerce demo is retained at `examples/ecommerce` (`npm ru
 - `examples/ecommerce/tests/`: timer, cancellation, configuration, token and locale checks.
 - Other `examples/`: upstream examples kept for reference.
 
-Based on [DecartAI/tryon-examples](https://github.com/DecartAI/tryon-examples) and the Decart JavaScript SDK. The [MIT License](LICENSE) and [third-party notices](THIRD_PARTY_NOTICES.md) are preserved; packages also contain bundled dependency and Node runtime licenses. This tool is not affiliated with Decart.
+Based on [DecartAI/tryon-examples](https://github.com/DecartAI/tryon-examples) and the Decart JavaScript SDK. The [MIT License](LICENSE) and [third-party notices](THIRD_PARTY_NOTICES.md) are preserved; packages also contain bundled dependency and Node runtime licenses. This tool is not affiliated with Decart or Vidu.
 
 When reporting issues, provide reproduction steps and redacted errors only. Do not upload keys, tokens, private shopping pages or camera footage.

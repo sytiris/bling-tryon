@@ -17,6 +17,7 @@ if (!readFileSync(resolve(root, "lib/extension-id.ts"), "utf8").includes(id)) th
 mkdirSync(dest, { recursive: true });
 for (const file of ["manifest.json", "panel.html", "panel.css", "settings.html", "settings.css", "README.txt", "_locales"]) cpSync(resolve(root, "extension", file), resolve(dest, file), { recursive: true });
 await build({ entryPoints: [resolve(root, "extension/src/settings.mjs")], outfile: resolve(dest, "settings.js"), bundle: true, format: "esm", target: "chrome121", minify: true });
+const viduBundle = await build({ metafile: true, entryPoints: [resolve(root, "extension/src/vidu-rtc.mjs")], outfile: resolve(dest, "vidu-rtc.js"), bundle: true, format: "esm", platform: "browser", target: "chrome121", minify: true, legalComments: "eof" });
 const bundled = await build({ metafile: true, entryPoints: [resolve(root, "extension/src/panel.mjs")], outfile: resolve(dest, "panel.js"), bundle: true, format: "esm", platform: "browser", target: "chrome121", minify: true, legalComments: "eof" });
 await build({ entryPoints: [resolve(root, "extension/src/background.mjs")], outfile: resolve(dest, "background.js"), bundle: true, format: "esm", platform: "browser", target: "chrome121", minify: true });
 cpSync(resolve(sdkRoot, "dist/realtime/browser/frame-metadata-worker.js"), resolve(dest, "frame-metadata-worker.js"));
@@ -27,7 +28,7 @@ writeFileSync(resolve(dest, "EXTENSION_ID.txt"), id + "\n");
 console.log("Built local extension:", dest, "ID:", id);
 
 // Preserve attribution for runtime packages included in the local browser bundle.
-const packages = new Set(Object.keys(bundled.metafile.inputs).map((file) => {
+const packages = new Set(Object.keys({ ...bundled.metafile.inputs, ...viduBundle.metafile.inputs }).map((file) => {
   const absolute = resolve(file);
   const match = absolute.match(/^(.*\/node_modules\/(?:@[^/]+\/)?[^/]+)\//);
   return match?.[1];
@@ -36,7 +37,7 @@ let notices = "试衣镜bling — bundled third-party software\n\n";
 for (const directory of [...packages].sort()) {
   if (!existsSync(resolve(directory, "package.json"))) continue;
   const pkg = JSON.parse(readFileSync(resolve(directory, "package.json"), "utf8"));
-  notices += "\n--- " + pkg.name + " " + pkg.version + " (" + pkg.license + ") ---\n";
+  notices += "\n--- " + pkg.name + " " + pkg.version + " (" + (pkg.license || "vendor terms; see root THIRD_PARTY_NOTICES.md") + ") ---\n";
   for (const file of readdirSync(directory).filter((name) => /^(licen[cs]e|notice|copying)(\.|$)/i.test(name))) {
     notices += readFileSync(resolve(directory, file), "utf8") + "\n";
   }

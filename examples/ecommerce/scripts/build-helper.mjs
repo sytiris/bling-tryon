@@ -6,6 +6,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 export async function buildHelper(dest) {
   await mkdir(dest, { recursive: true });
   await build({ entryPoints: [resolve(root, "helper/main.mjs")], outfile: resolve(dest, "server.mjs"),
+    banner: { js: 'import { createRequire } from "node:module"; const require = createRequire(import.meta.url);' },
     bundle: true, platform: "node", format: "esm", target: "node24", minify: false });
   await cp(resolve(root, "helper/public"), resolve(dest, "public"), { recursive: true });
 }

@@ -12,3 +12,7 @@ next-env.d.ts
 dist/
 user.env
 .key-*
+
+vidu.env
+providers.json
+.provider-*

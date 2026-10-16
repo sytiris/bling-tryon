@@ -10,23 +10,27 @@
 <body>
   <main>
     <header><a class="brand" href="/setup"><span data-i18n="试衣镜bling">试衣镜bling</span></a><span class="badge" data-i18n="本地助手">本地助手</span><button id="language" type="button" title="Switch language / 切换语言">中 / EN</button></header>
-    <section class="intro"><span class="eyebrow" data-i18n="用你自己的 DECART 账户">用你自己的 DECART 账户</span><h1 data-i18n="连接好，就去挑件喜欢的。">连接好，就去挑件喜欢的。</h1><p data-i18n="密钥留在这台电脑。试穿费用由你的 Decart 账户承担。">密钥留在这台电脑。试穿费用由你的 Decart 账户承担。</p></section>
+    <section class="intro"><span class="eyebrow" data-i18n="使用你自己的模型账户">使用你自己的模型账户</span><h1 data-i18n="连接好，就去挑件喜欢的。">连接好，就去挑件喜欢的。</h1><p data-i18n="密钥留在这台电脑。费用由所选模型平台的账户承担。">密钥留在这台电脑。费用由所选模型平台的账户承担。</p></section>
     <section class="card">
-      <div class="section-title"><h2>Decart API Key</h2><span id="key-status" data-i18n="检查中">检查中</span></div>
+      <div class="provider-controls"><label><span data-i18n="模型服务">模型服务</span><select id="provider"><option value="decart">Decart · Lucy VTON</option><option value="vidu" data-i18n="Vidu S2-Editing（实验性）">Vidu S2-Editing（实验性）</option></select></label><label id="region-field" hidden><span data-i18n="Vidu 密钥所属地区">Vidu 密钥所属地区</span><select id="vidu-region"><option value="cn" data-i18n="中国站">中国站</option><option value="global" data-i18n="全球站">全球站</option></select></label></div>
+      <p class="hint" data-i18n="切换服务或地区会停止当前试穿；两家的密钥分别保存在本机。">切换服务或地区会停止当前试穿；两家的密钥分别保存在本机。</p>
+      <p id="vidu-note" class="hint" hidden data-i18n="Vidu 为实验性功能，尚未完成真实付费试穿验证；密钥须与地区匹配，费用以平台账单为准。">Vidu 为实验性功能，尚未完成真实付费试穿验证；密钥须与地区匹配，费用以平台账单为准。</p>
+      <div class="section-title"><h2 id="key-title">Decart API Key</h2><span id="key-status" data-i18n="检查中">检查中</span></div>
       <p id="getting-started" class="hint"><span data-i18n="第一次使用？先">第一次使用？先</span><a href="https://platform.decart.ai/" target="_blank" rel="noopener noreferrer" data-i18n="注册 / 登录 Decart">注册 / 登录 Decart</a><span data-i18n="，在控制台查看试用积分，再创建 API Key。新账户试用额度和有效期以平台显示为准；本工具不会自动充值。">，在控制台查看试用积分，再创建 API Key。新账户试用额度和有效期以平台显示为准；本工具不会自动充值。</span></p>
+      <p id="vidu-getting-started" class="hint" hidden data-i18n="在 Vidu 对应地区的控制台创建 Key；验证仅查询额度，不创建生成会话。零余额也可保存有效密钥。">在 Vidu 对应地区的控制台创建 Key；验证仅查询额度，不创建生成会话。零余额也可保存有效密钥。</p>
       <form id="key-form" autocomplete="off">
         <label for="api-key" data-i18n="粘贴你的密钥">粘贴你的密钥</label>
         <div class="key-input"><input id="api-key" name="api-key" type="password" autocomplete="off" spellcheck="false" maxlength="512" placeholder="从 Decart 控制台复制" data-i18n-placeholder="从 Decart 控制台复制" required><button id="save" type="submit" data-i18n="验证并保存">验证并保存</button></div>
       </form>
-      <p class="hint" data-i18n="验证时仅向 Decart 申请短期令牌，不开启摄像头，不开始生成。">验证时仅向 Decart 申请短期令牌，不开启摄像头，不开始生成。</p>
-      <div class="key-actions"><button id="test-current" type="button" disabled data-i18n="测试当前密钥">测试当前密钥</button><button id="delete-key" type="button" disabled data-i18n="删除本机密钥">删除本机密钥</button><a href="https://platform.decart.ai/api-keys" target="_blank" rel="noopener noreferrer" data-i18n="创建 / 查看 API Key ↗">创建 / 查看 API Key ↗</a></div>
+      <p id="verification-note" class="hint" data-i18n="验证时仅向 Decart 申请短期令牌，不开启摄像头，不开始生成。">验证时仅向 Decart 申请短期令牌，不开启摄像头，不开始生成。</p>
+      <div class="key-actions"><button id="test-current" type="button" disabled data-i18n="测试当前密钥">测试当前密钥</button><button id="delete-key" type="button" disabled data-i18n="删除本机密钥">删除本机密钥</button><a id="create-key-link" href="https://platform.decart.ai/api-keys" target="_blank" rel="noopener noreferrer" data-i18n="创建 / 查看 API Key ↗">创建 / 查看 API Key ↗</a></div>
       <p id="message" role="status" hidden></p>
     </section>
     <section class="install">
       <h2 data-i18n="准备好之后，打开试衣镜">准备好之后，打开试衣镜</h2>
       <ol><li><span data-i18n="打开 ">打开 </span><button id="copy-extensions" class="inline" type="button">chrome://extensions <span data-i18n="复制">复制</span></button><span data-i18n="，开启「开发者模式」。">，开启「开发者模式」。</span></li><li><span data-i18n="点击「加载未打包的扩展程序」，选择安装包里的 ">点击「加载未打包的扩展程序」，选择安装包里的 </span><strong>chrome-tryon</strong><span data-i18n=" 文件夹。"> 文件夹。</span><button id="copy-path" class="inline" type="button" data-i18n="复制文件夹路径">复制文件夹路径</button></li><li><span data-i18n="回到购物网页，点插件图标。选一件衣服，允许摄像头，再点 ">回到购物网页，点插件图标。选一件衣服，允许摄像头，再点 </span><strong data-i18n="10 秒 / 20 秒">10 秒 / 20 秒</strong><span data-i18n="。">。</span></li></ol>
     </section>
-    <footer><p data-i18n="保持助手终端开启。关闭此网页不会停止助手；终端按 Ctrl+C 退出。">保持助手终端开启。关闭此网页不会停止助手；终端按 Ctrl+C 退出。</p><p data-i18n="开始试穿才连接 AI；到点自动断开。10/20 秒从出画起算，实际生成计费可能更长。正方形取景不降低每秒费用。">开始试穿才连接 AI；到点自动断开。10/20 秒从出画起算，实际生成计费可能更长。正方形取景不降低每秒费用。</p><p data-i18n="密钥只保存在本机配置目录，不会发送给插件作者。相机画面和服装图片仅在你点击试穿后发送给 Decart。本工具与 Decart 官方无隶属关系。">密钥只保存在本机配置目录，不会发送给插件作者。相机画面和服装图片仅在你点击试穿后发送给 Decart。本工具与 Decart 官方无隶属关系。</p></footer>
+    <footer><p data-i18n="保持助手终端开启。关闭此网页不会停止助手；终端按 Ctrl+C 退出。">保持助手终端开启。关闭此网页不会停止助手；终端按 Ctrl+C 退出。</p><p data-i18n="开始试穿才连接 AI；到点自动断开。10/20 秒从出画起算，实际生成计费可能更长。正方形取景不降低每秒费用。">开始试穿才连接 AI；到点自动断开。10/20 秒从出画起算，实际生成计费可能更长。正方形取景不降低每秒费用。</p><p data-i18n="密钥只保存在本机配置目录，不会发送给插件作者。相机画面和服装图片仅在你点击试穿后发送给所选平台；Vidu 使用阿里云 RTC 传输。本工具与模型平台官方无隶属关系。">密钥只保存在本机配置目录，不会发送给插件作者。相机画面和服装图片仅在你点击试穿后发送给所选平台；Vidu 使用阿里云 RTC 传输。本工具与模型平台官方无隶属关系。</p></footer>
   </main>
   <script type="module" src="/app.js"></script>
 </body>

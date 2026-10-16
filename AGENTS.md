@@ -15,7 +15,7 @@ For requests to download, install, start or use this project, read README.md fir
 - Run start-macos.command, start-windows.cmd or start-linux.sh. Chinese macOS/Windows launcher names are also retained. Keep the helper running; reuse existing services/configuration without deleting or overwriting user settings.
 - Normal desktop launch opens http://127.0.0.1:3000/setup and, when unconfigured, https://platform.decart.ai/api-keys . If a headless terminal does not open them, use an available local browser tool. Otherwise provide clickable URLs.
 - Let the human sign up/log in to Decart, check trial credits and create an API key. The official FAQ currently states new accounts get free credits; the console determines amounts, expiry and eligibility. Do not promise a fixed amount or top up for them.
-- The human pastes the key directly into local setup and clicks Verify & save. Do not ask for or read keys, put them in chat/tool arguments/commands/frontend/logs/screenshots/version control, or read existing user.env or .env files to fill the field for the user.
+- The human pastes the key directly into local setup and clicks Verify & save. Do not ask for or read keys, put them in chat/tool arguments/commands/frontend/logs/screenshots/version control, or read existing user.env, vidu.env or .env files to fill the field for the user.
 - Read only GET http://127.0.0.1:3000/api/health to check configured status. Wait for the human to enter the key. Do not start a try-on to check balance.
 - UI follows browser language, with Chinese/English switch buttons. Do not change OS language. Configuration paths remain stable regardless of UI language.
 
@@ -24,4 +24,8 @@ For requests to download, install, start or use this project, read README.md fir
 - Provide the absolute path of the extracted chrome-tryon folder, open chrome://extensions, and guide the human through Developer mode and Load unpacked.
 - Guide them to an HTTPS shopping page, click the extension icon, hover and select clothing. The human grants camera access and actively clicks 10 sec or 20 sec.
 - Provide the local setup URL, extension path and launcher. A successful health/configuration check does not verify real try-on quality.
-- Do not auto-enable the camera, start generation or retry paid sessions. Permanent keys stay in the local helper; the extension uses short-lived client tokens only.
+- Do not auto-enable the camera, start generation or retry paid sessions. Permanent keys stay in the local helper; the extension uses short-lived client tokens/RTC credentials only.
+
+## Optional Vidu provider (v1.3.0+)
+
+Vidu S2-Editing is experimental and has not had funded real-generation validation. Use a v1.3.0-or-later full package and upgrade both helper and extension. Older Releases do not include this option. Do not claim that a successful key check or mocked test proves real try-on quality. Keep Decart as the default; switch only when the human requests Vidu. In local setup select Vidu and the key's China/Global region, open the corresponding https://platform.vidu.cn/ or https://platform.vidu.com/ console when requested, and let the human enter their key. Verification only queries credits and can save a valid zero-balance key. Do not create a live session to check a key, credits or installation. Do not fall back automatically to Decart when Vidu fails. Do not read vidu.env. Vidu keys stay in the helper, separate from Decart keys; RTC credentials and local control capabilities are short-lived. Registration, API credit purchases, permissions and starting paid generation remain human decisions.

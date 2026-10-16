@@ -9,7 +9,7 @@ async function check() {
     if (!response.ok || typeof health.configured !== "boolean") throw new Error();
     locale.text($("state"), health.configured ? "已连接 · 密钥已配置" : "已连接 · 请配置密钥");
     $("indicator").classList.toggle("ready", health.configured);
-    locale.text($("detail"), health.configured ? "可以回到购物网页试衣；打开配置页可测试、更换或删除本机密钥。" : "本地助手已启动，打开配置页填写你自己的 Decart API Key。");
+    locale.text($("detail"), health.configured ? "可以回到购物网页试衣；打开配置页可测试、更换或删除本机密钥。" : "本地助手已启动，打开配置页选择模型并填写对应的 API Key。");
     $("open-helper").hidden = false;
   } catch {
     locale.text($("state"), "本地助手未启动");

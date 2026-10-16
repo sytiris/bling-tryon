@@ -1,3 +1,4 @@
+import { connectVidu } from "./vidu.mjs";
 import { recordOutput } from "./recording.mjs";
 import { createReplay } from "./replay.mjs";
 import { english } from "../../helper/public/i18n.js";
@@ -41,6 +42,7 @@ let busy = false;
 let chosenSeconds = 10;
 let loadingPhase = "";
 let helperReady = false;
+let provider = "decart";
 let helperCredentialVersion = null;
 let helperChecking = false;
 let helperError = "";
@@ -243,6 +245,10 @@ async function startTrial(seconds) {
     ]));
     const image = await prepareGarment(source);
     activeController.signal.throwIfAborted();
+    // Refresh an idle mirror's provider choice before requesting paid work.
+    await checkHelper(true);
+    if (id !== runId) return;
+    if (!helperReady) throw new Error(helperError);
     loading("获取短期令牌");
     // Covers connect and waiting for a decoded frame. No billed session is left waiting indefinitely.
     frameDeadline = setTimeout(() => {
@@ -256,6 +262,27 @@ async function startTrial(seconds) {
     sessionDeadline = setTimeout(() => {
       if (id === runId) stopTrial("已到安全时限，AI 已断开");
     }, (seconds + 35) * 1000);
+    if (provider === "vidu") {
+      centeredInput = createCenteredInput(camera, model);
+      trialStream = centeredInput.stream;
+      loading("建立 Vidu 实时连接");
+      const connection = await connectVidu(trialStream, {
+        image, duration: seconds, output, signal: activeController.signal,
+        onRemoteStream: stream => {
+          if (id !== runId) return;
+          remoteStream = stream;
+          stream.getVideoTracks().forEach(track => track.addEventListener("ended", () => {
+            if (id === runId) { stopTrial("画面已中断，AI 已断开"); error("请主动点击试穿按钮重试"); }
+          }, { once: true }));
+          frameCallback = output.requestVideoFrameCallback(() => firstFrame(id));
+        },
+        onConnectionChange: () => { if (id === runId && firstFrameAt === null) loading("等待第一帧试穿画面"); },
+        onError: key => { if (id === runId) { stopTrial("连接已中断，AI 已停止"); error(key); } },
+      });
+      if (id !== runId) { connection.disconnect(); return; }
+      realtime = connection;
+      return;
+    }
     let credentialRequested = false;
     const client = createDecartClient({
       apiKeyProvider: async () => {
@@ -398,7 +425,7 @@ void chrome.runtime.sendMessage({ target: "background", type: "get-state" }).the
     loadSource(response.state);
   } else error("请在购物页面点击插件图标打开试衣镜");
 }).catch(() => error("请在购物页面重新打开试衣镜"));
-async function checkHelper() {
+async function checkHelper(starting = false) {
   if (helperChecking) return;
   helperChecking = true;
   try {
@@ -409,9 +436,14 @@ async function checkHelper() {
     const changed = helperCredentialVersion && health.credentialVersion !== helperCredentialVersion;
     helperCredentialVersion = health.credentialVersion || null;
     helperReady = health.configured;
-    if ((!helperReady || changed) && busy) stopTrial("密钥配置已变更，AI 已停止");
+    provider = health.provider === "vidu" ? "vidu" : "decart";
+    $("provider-name").textContent = provider === "vidu" ? "Vidu S2" : "Decart";
+    const providerTitle = provider === "vidu" ? "Vidu S2-Editing（实验性）" : "当前服务：Decart Lucy VTON";
+    $("provider-name").dataset.i18nTitle = providerTitle;
+    $("provider-name").title = t(providerTitle);
+    if ((!helperReady || (changed && !starting)) && busy) stopTrial("密钥配置已变更，AI 已停止");
     if (!helperReady) {
-      helperError = "请点击标题栏 ⚙，在本地助手中配置你自己的 Decart Key。";
+      helperError = "请点击标题栏 ⚙，选择模型并配置对应平台的 API Key。";
       error(helperError);
     } else if ($("error").dataset.i18n === helperError) error();
   } catch {

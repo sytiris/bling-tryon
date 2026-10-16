@@ -75,3 +75,5 @@ html.large .stage { height:100%;max-height:calc(100vw - 20px);width:auto;max-wid
 .video-tools button,.video-tools input { pointer-events:none; }
 .stage:hover .video-tools button,.stage:hover .video-tools input,.stage:focus-within .video-tools button,.stage:focus-within .video-tools input,.stage.replay-paused .video-tools button,.stage.replay-paused .video-tools input { pointer-events:auto; }
 @media(hover:none) { .video-tools button,.video-tools input { pointer-events:auto; } }
+
+#provider-name{flex-shrink:0;font-size:9px;color:var(--muted)}
