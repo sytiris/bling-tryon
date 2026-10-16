@@ -1,8 +1,10 @@
-[English](README.md) | **简体中文**
+[简体中文首页](README.md) | [English](README.en.md)
 
 # 试衣镜bling
 
-**bling-tryon**：在购物网页里挑一件衣服，用实时 AI 看看上身效果。Chrome 网页浮窗＋本地助手，每位用户使用自己的 Decart 或可选 Vidu API Key（BYOK）。
+**试衣镜bling 是一款直接接入你自己模型 API 的开源虚拟试穿工具，让你从源头掌握模型账户和 API 费用。** 默认使用你自己的 Decart API Key，在 Chrome 购物网页里实时试衣。Decart 目前向新注册账户提供免费 API 试用积分，**在赠送额度和适用规则内即可体验试穿，无需向本项目支付试穿费或订阅费**；额度用尽后，是否充值由你自主决定，后续 API 使用按平台规则计费。赠额、有效期和适用条件以你的控制台及[官方说明](https://docs.platform.decart.ai/getting-started/pricing#faq)为准。
+
+你也可以在这套开源的 Chrome 浮窗＋本地助手基础上，围绕虚拟试穿继续开发自己的选衣、穿搭或购物功能。**密钥自己保管、用量直接在模型平台查看、模型服务与充值预算自己决定**，配合已有的 10/20 秒试穿和自动断连，从源头管理 API 消耗。当前默认支持 Decart，并提供实验性的 Vidu S2-Editing 接入口。
 
 ![本地助手配置页](docs/assets/local-helper.png)
 

@@ -1,6 +1,6 @@
 # Bling Try-On: local-agent installation guide
 
-For requests to download, install, start or use this project, read README.md first and follow the steps below. Authorized local installation and read-only preparation may proceed. The human handles account registration, verification codes, terms, payments, key entry and browser permission decisions. Chinese user documentation: README.zh-CN.md.
+For requests to download, install, start or use this project, read README.md first and follow the steps below. Authorized local installation and read-only preparation may proceed. The human handles account registration, verification codes, terms, payments, key entry and browser permission decisions. The default README.md is Chinese; English user documentation: README.en.md. README.zh-CN.md is retained for existing Chinese links.
 
 ## 1. Select and verify the package
 
